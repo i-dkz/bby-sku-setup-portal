@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
+import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,15 +18,19 @@ import {
 import { Input } from "@/components/ui/input"
 
 const formSchema = z.object({
-  vendorCode: z.number().int().min(100000).max(999999)
+  vendorCode: z.string().min(4, {
+    message: "Vendor code must be at least 4 numbers.",
+  }),
 })
 
 export function ProfileForm() {
+
+    const router = useRouter();
     // 1. Define your form.
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-          vendorCode: 0,
+          vendorCode: "",
         },
       })
      
@@ -33,7 +38,10 @@ export function ProfileForm() {
       function onSubmit(values: z.infer<typeof formSchema>) {
         // Do something with the form values.
         // ✅ This will be type-safe and validated.
-        console.log(values)
+        if (values.vendorCode === "2200") {
+            router.push("/smart")
+        }
+        console.log(values.vendorCode)
       }
 
   return (
@@ -46,10 +54,10 @@ export function ProfileForm() {
             <FormItem>
               <FormLabel>Vendor Code</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="#000000" {...field} />
               </FormControl>
               <FormDescription>
-                Enter Vendor Code.
+                Enter vendor code.
               </FormDescription>
               <FormMessage />
             </FormItem>
