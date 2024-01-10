@@ -3,35 +3,42 @@ import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
-  UPC: z.string().min(12, {
-    message: "UPC must be a minimum of 12 characters.",
-  }).max(13, {
-    message: "UPC must be a maximum of 13 characters.",
-  }),
+  UPC: z
+    .string()
+    .min(12, {
+      message: "UPC must be a minimum of 12 characters.",
+    })
+    .max(13, {
+      message: "UPC must be a maximum of 13 characters.",
+    }),
+    skuOwner: z.string().min(1, {
+      message: "Please select one.",
+    })
 });
 
 export default function Smart() {
@@ -39,6 +46,7 @@ export default function Smart() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       UPC: "",
+      skuOwner: "",
     },
   });
 
@@ -56,7 +64,6 @@ export default function Smart() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <Table className="flex flex-col">
-
             <TableHeader>
               <TableRow>
                 <TableHead>Primary UPC</TableHead>
@@ -122,7 +129,27 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="skuOwner"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="futureshop">F</SelectItem>
+                              <SelectItem value="bestbuy">B</SelectItem>
+                              <SelectItem value="shared">S</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
                   <Input></Input>
@@ -163,7 +190,6 @@ export default function Smart() {
                 <TableCell>
                   <Input></Input>
                 </TableCell>
-                
               </TableRow>
             </TableBody>
           </Table>
