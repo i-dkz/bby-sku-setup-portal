@@ -34,11 +34,27 @@ const formSchema = z.object({
       message: "UPC must be a minimum of 12 characters.",
     })
     .max(13, {
-      message: "UPC must be a maximum of 13 characters.",
+      message: "UPC exceeds 13 characters.",
     }),
     skuOwner: z.string().min(1, {
       message: "Please select one.",
+    }),
+    modelNumber: z
+    .string()
+    .min(1, {
+      message: "Please fill out this field.",
     })
+    .max(20, {
+      message: "Model number exceeds 20 characters.",
+    }),
+    longDescription: z
+    .string()
+    .min(1, {
+      message: "Please fill out this field.",
+    })
+    .max(40, {
+      message: "Long description exceeds 40 characters.",
+    }),
 });
 
 export default function Smart() {
@@ -47,6 +63,8 @@ export default function Smart() {
     defaultValues: {
       UPC: "",
       skuOwner: "",
+      modelNumber: "",
+      longDescription: "",
     },
   });
 
@@ -54,9 +72,8 @@ export default function Smart() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    if (values.UPC === "2200") {
-    }
-    console.log(values.UPC);
+
+    console.log(values.UPC, values.skuOwner, values.modelNumber);
   }
 
   return (
@@ -152,10 +169,32 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                <FormField
+                    control={form.control}
+                    name="modelNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                <FormField
+                    control={form.control}
+                    name="longDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
                   <Input></Input>
