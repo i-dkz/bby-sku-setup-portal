@@ -36,10 +36,10 @@ const formSchema = z.object({
     .max(13, {
       message: "UPC exceeds 13 characters.",
     }),
-    skuOwner: z.string().min(1, {
-      message: "Please select one.",
-    }),
-    modelNumber: z
+  skuOwner: z.string().min(1, {
+    message: "Please select one.",
+  }),
+  modelNumber: z
     .string()
     .min(1, {
       message: "Please fill out this field.",
@@ -47,7 +47,7 @@ const formSchema = z.object({
     .max(20, {
       message: "Model number exceeds 20 characters.",
     }),
-    longDescription: z
+  longDescription: z
     .string()
     .min(1, {
       message: "Please fill out this field.",
@@ -55,7 +55,83 @@ const formSchema = z.object({
     .max(40, {
       message: "Long description exceeds 40 characters.",
     }),
+  forIndividualSale: z.string().min(1, {
+    message: "Please select one.",
+  }),
+  skuRequiredAdvance: z.string().min(1, {
+    message: "Please select one.",
+  }),
+  ftpVideoLocation: z
+    .string()
+    .min(0, {
+      message: "Please fill out this field.",
+    })
+    .max(200, {
+      message: "field cannot exceed 200 characters.",
+    }),
+  onproofFTPFileLocation: z
+    .string()
+    .min(0, {
+      message: "Please fill out this field.",
+    })
+    .max(200, {
+      message: "field cannot exceed 200 characters.",
+    }),
+  vendorAssetSiteURL: z
+    .string()
+    .min(0, {
+      message: "Please fill out this field.",
+    })
+    .max(200, {
+      message: "field cannot exceed 200 characters.",
+    }),
+  vendorAssetSiteUsernamePassword: z
+    .string()
+    .min(0, {
+      message: "Please fill out this field.",
+    })
+    .max(200, {
+      message: "field cannot exceed 200 characters.",
+    }),
 });
+
+// Onproof.ca FTP File Location
+// Vendor Asset Site URL
+// Vendor Asset Site Username & Password
+// ETA for Assets
+// Product Variants
+// Product Overview
+// Features and Benefits
+// Is In-Store Only BB
+// Embargo Date
+// Product Condition
+// Type (CA-English)
+// Material (CA-English)
+// Colour (CA-English)
+// Pattern/Theme (CA-English)
+// Collection/Series (CA-English)
+// Compatible Brands (CA-English)
+// Compatible Models (CA-English)
+// Voice Assistant Built-In
+// Works with Google Assistant
+// Works with Amazon Alexa
+// Product Line (CA-English)
+// Jewelry Accessory Type
+// Width
+// Height
+// Depth
+// Width (Inches)
+// Height (Inches)
+// Depth (Inches)
+// Weight
+// What's in the Box (CA-English)
+// Flyer Software Platform
+// Flyer Subhead (CA-English)
+// Flyer Icon 1
+// Flyer Bullet 1 (CA-English)
+// Flyer Bullet 2 (CA-English)
+// Flyer Bullet 3 (CA-English)
+// Flyer Bullet 4 (CA-English)
 
 export default function Smart() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -65,6 +141,12 @@ export default function Smart() {
       skuOwner: "",
       modelNumber: "",
       longDescription: "",
+      forIndividualSale: "",
+      skuRequiredAdvance: "",
+      ftpVideoLocation: "",
+      onproofFTPFileLocation: "",
+      vendorAssetSiteURL: "",
+      vendorAssetSiteUsernamePassword: "",
     },
   });
 
@@ -152,7 +234,10 @@ export default function Smart() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <SelectTrigger className="w-[180px]">
                               <SelectValue placeholder="" />
                             </SelectTrigger>
@@ -169,7 +254,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="modelNumber"
                     render={({ field }) => (
@@ -183,7 +268,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="longDescription"
                     render={({ field }) => (
@@ -195,6 +280,203 @@ export default function Smart() {
                       </FormItem>
                     )}
                   />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="forIndividualSale"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="no-ensemble">
+                                No - Ensemble Product
+                              </SelectItem>
+                              <SelectItem value="no-gift">
+                                No - Gift with Purchase
+                              </SelectItem>
+                              <SelectItem value="no-multiBoxEnsemble">
+                                No - Multi-box and Ensemble Product
+                              </SelectItem>
+                              <SelectItem value="no-multiBox">
+                                No - Multi-box Product
+                              </SelectItem>
+                              <SelectItem value="yes">Yes</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="skuRequiredAdvance"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="no">No</SelectItem>
+                              <SelectItem value="yes-photo">
+                                Yes - Photo Services Required
+                              </SelectItem>
+                              <SelectItem value="yes-preorder">
+                                Yes - Pre-Order/Coming Soon
+                              </SelectItem>
+                              <SelectItem value="yes-purchase">
+                                Yes - Purchase Order
+                              </SelectItem>
+                              <SelectItem value="yes-manufacture">
+                                Yes - Required for Manufacture of Product
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="ftpVideoLocation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="onproofFTPFileLocation"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="vendorAssetSiteURL"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="vendorAssetSiteUsernamePassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
+                </TableCell>
+                <TableCell>
+                  <Input></Input>
                 </TableCell>
                 <TableCell>
                   <Input></Input>
