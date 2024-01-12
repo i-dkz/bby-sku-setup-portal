@@ -16,11 +16,13 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 const formSchema = z.object({
   vendorCode: z.string().min(4, {
     message: "Vendor code must be at least 4 numbers.",
   }),
+  department: z.string().min(1),
 })
 
 export function ProfileForm() {
@@ -31,6 +33,7 @@ export function ProfileForm() {
         resolver: zodResolver(formSchema),
         defaultValues: {
           vendorCode: "",
+          department: ""
         },
       })
      
@@ -63,6 +66,31 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
+                  <FormField
+                    control={form.control}
+                    name="department"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Product Type</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="futureshop">TV</SelectItem>
+                              <SelectItem value="bestbuy">Computer</SelectItem>
+                              <SelectItem value="shared">Laptop</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
         <Button type="submit">Submit</Button>
       </form>
     </Form>
