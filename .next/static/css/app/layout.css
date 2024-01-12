@@ -777,6 +777,15 @@ video {
 .w-9 {
   width: 2.25rem;
 }
+.w-\[240px\] {
+  width: 240px;
+}
+.w-auto {
+  width: auto;
+}
+.w-\[120px\] {
+  width: 120px;
+}
 .min-w-\[8rem\] {
   min-width: 8rem;
 }
@@ -970,6 +979,9 @@ video {
 }
 .pt-1 {
   padding-top: 0.25rem;
+}
+.pl-3 {
+  padding-left: 0.75rem;
 }
 .text-left {
   text-align: left;

@@ -15,8 +15,10 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -26,8 +28,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
 
 const formSchema = z.object({
+  VPN: z.string().min(1).max(20),
+  shortDescription: z.string().min(1).max(20),
+  longDescription: z.string().min(1).max(40),
   UPC: z
     .string()
     .min(12, {
@@ -36,7 +50,15 @@ const formSchema = z.object({
     .max(13, {
       message: "UPC exceeds 13 characters.",
     }),
-  skuOwner: z.string().min(1, {
+  secondaryUPC: z
+    .string()
+    .min(12, {
+      message: "UPC must be a minimum of 12 characters.",
+    })
+    .max(13, {
+      message: "UPC exceeds 13 characters.",
+    }),
+  brand: z.string().min(1, {
     message: "Please select one.",
   }),
   modelNumber: z
@@ -47,21 +69,20 @@ const formSchema = z.object({
     .max(20, {
       message: "Model number exceeds 20 characters.",
     }),
-  longDescription: z
-    .string()
-    .min(1, {
-      message: "Please fill out this field.",
-    })
-    .max(40, {
-      message: "Long description exceeds 40 characters.",
-    }),
   forIndividualSale: z.string().min(1, {
     message: "Please select one.",
   }),
   skuRequiredAdvance: z.string().min(1, {
     message: "Please select one.",
   }),
-  ftpVideoLocation: z
+  ftpVideoLocation: z.string().optional(),
+  onproofFTPFileLocation: z.string().optional(),
+  vendorAssetSiteURL: z.string().optional(),
+  vendorAssetSiteUsernamePassword: z.string().optional(),
+  etaForAssets: z.date({
+    required_error: "ETA is required.",
+  }),
+  productVariants: z
     .string()
     .min(0, {
       message: "Please fill out this field.",
@@ -69,7 +90,7 @@ const formSchema = z.object({
     .max(200, {
       message: "field cannot exceed 200 characters.",
     }),
-  onproofFTPFileLocation: z
+  productOverview: z
     .string()
     .min(0, {
       message: "Please fill out this field.",
@@ -77,7 +98,7 @@ const formSchema = z.object({
     .max(200, {
       message: "field cannot exceed 200 characters.",
     }),
-  vendorAssetSiteURL: z
+  featuresAndBenefits: z
     .string()
     .min(0, {
       message: "Please fill out this field.",
@@ -85,14 +106,11 @@ const formSchema = z.object({
     .max(200, {
       message: "field cannot exceed 200 characters.",
     }),
-  vendorAssetSiteUsernamePassword: z
-    .string()
-    .min(0, {
-      message: "Please fill out this field.",
-    })
-    .max(200, {
-      message: "field cannot exceed 200 characters.",
-    }),
+  inStoreOnly: z.string().min(1, {
+    message: "Please select one.",
+  }),
+  embargoDate: z.date().optional(),
+  productCondition: z.string().min(1),
 });
 
 // Onproof.ca FTP File Location
@@ -138,15 +156,17 @@ export default function Smart() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       UPC: "",
-      skuOwner: "",
+      brand: "",
       modelNumber: "",
       longDescription: "",
-      forIndividualSale: "",
       skuRequiredAdvance: "",
       ftpVideoLocation: "",
       onproofFTPFileLocation: "",
       vendorAssetSiteURL: "",
       vendorAssetSiteUsernamePassword: "",
+      productVariants: "",
+      productOverview: "",
+      featuresAndBenefits: "",
     },
   });
 
@@ -155,7 +175,7 @@ export default function Smart() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
-    console.log(values.UPC, values.skuOwner, values.modelNumber);
+    console.log(values.UPC, values.brand, values.modelNumber);
   }
 
   return (
@@ -165,17 +185,54 @@ export default function Smart() {
           <Table className="flex flex-col">
             <TableHeader>
               <TableRow>
-                <TableHead>Primary UPC</TableHead>
-                <TableHead>SKU Owner</TableHead>
-                <TableHead>Model Number</TableHead>
-                <TableHead>RMS Long Description</TableHead>
+                <TableHead>Vendor Part Number</TableHead>
+                <TableHead>Description (Short)</TableHead>
+                <TableHead>Description (Long)</TableHead>
+                <TableHead>UPC</TableHead>
+                <TableHead>Secondary UPC (Optional)</TableHead>
+                <TableHead>Brand</TableHead>
+                <TableHead>Model</TableHead>
+                <TableHead>Manufacturer</TableHead>
+                <TableHead>Unit Cost</TableHead>
+                <TableHead>Retail Price</TableHead>
+                <TableHead>Width cm (Boxed)</TableHead>
+                <TableHead>Height cm (Boxed)</TableHead>
+                <TableHead>Depth cm (Boxed)</TableHead>
+                <TableHead>Weight kg (Boxed)</TableHead>
+                <TableHead>Width cm (Unboxed)</TableHead>
+                <TableHead>Height cm (Unboxed)</TableHead>
+                <TableHead>Depth cm (Unboxed)</TableHead>
+                <TableHead>Weight kg (Unboxed)</TableHead>
+                <TableHead>Case Pack Qty</TableHead>
+                <TableHead>Inner Pack Qty</TableHead>
+                <TableHead>Unit Cost For Additional Supplier(1)</TableHead>
+                <TableHead>Case Pack Qty For Additional Supplier(1)</TableHead>
+                <TableHead>Inner Pack Qty For Additional Supplier(1)</TableHead>
+                <TableHead>Unit Cost For Additional Supplier(2)</TableHead>
+                <TableHead>Case Pack Qty For Additional Supplier(2)</TableHead>
+                <TableHead>Inner Pack Qty For Additional Supplier(2)</TableHead>
+                <TableHead>French Compliant</TableHead>
+                <TableHead>Shippable to Quebec</TableHead>
+                <TableHead>Energy Star</TableHead>
+                <TableHead>Refurbished</TableHead>
+                <TableHead>Consignment</TableHead>
+                <TableHead>Software Platform</TableHead>
+                <TableHead>Street Date</TableHead>
+                <TableHead>Product Warranty Days</TableHead>
+                <TableHead>Product Warranty Coverage</TableHead>
+                <TableHead>Extended Parts Warranty</TableHead>
+                <TableHead>Return Restrictions</TableHead>
+                <TableHead>Embargo Date</TableHead>
+                <TableHead>Expiration Date/Lot Number</TableHead>
+                <TableHead>Shelf Life</TableHead>
+                <TableHead>Data Flag</TableHead>
+                <TableHead>Dangerous Product/Material</TableHead>
                 <TableHead>For Individual Sale</TableHead>
-                <TableHead>SKU Required in Advance</TableHead>
                 <TableHead>FTP Video Location</TableHead>
                 <TableHead>Onproof.ca FTP File Location</TableHead>
                 <TableHead>Vendor Asset Site URL</TableHead>
                 <TableHead>Vendor Asset Site Username & Password</TableHead>
-                <TableHead>ETA for Assets</TableHead>
+                <TableHead>ETA For Assets</TableHead>
                 <TableHead>Product Variants</TableHead>
                 <TableHead>Product Overview</TableHead>
                 <TableHead>Features and Benefits</TableHead>
@@ -183,27 +240,7 @@ export default function Smart() {
                 <TableHead>Embargo Date</TableHead>
                 <TableHead>Product Condition</TableHead>
                 <TableHead>Type (CA-English)</TableHead>
-                <TableHead>Material (CA-English)</TableHead>
-                <TableHead>Colour (CA-English)</TableHead>
-                <TableHead>Pattern/Theme (CA-English)</TableHead>
-                <TableHead>Collection/Series (CA-English)</TableHead>
-                <TableHead>Compatible Brands (CA-English)</TableHead>
-                <TableHead>Compatible Models (CA-English)</TableHead>
-                <TableHead>Voice Assistant Built-In</TableHead>
-                <TableHead>Works with Google Assistant</TableHead>
-                <TableHead>Works with Amazon Alexa</TableHead>
-                <TableHead>Product Line (CA-English)</TableHead>
-                <TableHead>Jewelry Accessory Type</TableHead>
-                <TableHead>Width</TableHead>
-                <TableHead>Height</TableHead>
-                <TableHead>Depth</TableHead>
-                <TableHead>Width (Inches)</TableHead>
-                <TableHead>Height (Inches)</TableHead>
-                <TableHead>Depth (Inches)</TableHead>
-                <TableHead>Weight</TableHead>
-                <TableHead>What's in the Box (CA-English)</TableHead>
-                <TableHead>Flyer Software Platform</TableHead>
-                <TableHead>Flyer Subhead (CA-English)</TableHead>
+                <TableHead>Features and Benefits</TableHead>
                 <TableHead>Flyer Icon 1</TableHead>
                 <TableHead>Flyer Bullet 1 (CA-English)</TableHead>
                 <TableHead>Flyer Bullet 2 (CA-English)</TableHead>
@@ -230,7 +267,7 @@ export default function Smart() {
                 <TableCell>
                   <FormField
                     control={form.control}
-                    name="skuOwner"
+                    name="brand"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
@@ -382,7 +419,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="vendorAssetSiteURL"
                     render={({ field }) => (
@@ -396,7 +433,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="vendorAssetSiteUsernamePassword"
                     render={({ field }) => (
@@ -410,25 +447,193 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="etaForAssets"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-auto pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) => date < new Date()}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="productVariants"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="productOverview"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="featuresAndBenefits"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="inStoreOnly"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="no">No</SelectItem>
+                              <SelectItem value="yes">Yes</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="embargoDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-auto pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) => date < new Date()}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="productCondition"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="brand-new">
+                                Brand New
+                              </SelectItem>
+                              <SelectItem value="geek-squad-ob">
+                                Geek Squad Open Box
+                              </SelectItem>
+                              <SelectItem value="ob">Open Box</SelectItem>
+                              <SelectItem value="ref-excellent">
+                                Refurbished Excellent
+                              </SelectItem>
+                              <SelectItem value="ref-fair">
+                                Refurbished Fair
+                              </SelectItem>
+                              <SelectItem value="ref-good">
+                                Refurbished Good
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
                   <Input></Input>
