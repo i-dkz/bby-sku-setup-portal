@@ -111,45 +111,9 @@ const formSchema = z.object({
   }),
   embargoDate: z.date().optional(),
   productCondition: z.string().min(1),
+  unitCost: z.string().transform(value => parseFloat(value))
 });
 
-// Onproof.ca FTP File Location
-// Vendor Asset Site URL
-// Vendor Asset Site Username & Password
-// ETA for Assets
-// Product Variants
-// Product Overview
-// Features and Benefits
-// Is In-Store Only BB
-// Embargo Date
-// Product Condition
-// Type (CA-English)
-// Material (CA-English)
-// Colour (CA-English)
-// Pattern/Theme (CA-English)
-// Collection/Series (CA-English)
-// Compatible Brands (CA-English)
-// Compatible Models (CA-English)
-// Voice Assistant Built-In
-// Works with Google Assistant
-// Works with Amazon Alexa
-// Product Line (CA-English)
-// Jewelry Accessory Type
-// Width
-// Height
-// Depth
-// Width (Inches)
-// Height (Inches)
-// Depth (Inches)
-// Weight
-// What's in the Box (CA-English)
-// Flyer Software Platform
-// Flyer Subhead (CA-English)
-// Flyer Icon 1
-// Flyer Bullet 1 (CA-English)
-// Flyer Bullet 2 (CA-English)
-// Flyer Bullet 3 (CA-English)
-// Flyer Bullet 4 (CA-English)
 
 export default function Smart() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -276,7 +240,18 @@ export default function Smart() {
                   <Input></Input>
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                <FormField
+                    control={form.control}
+                    name="unitCost"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="#000000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
                   <Input></Input>
