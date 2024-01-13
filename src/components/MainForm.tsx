@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { useRouter } from "next/navigation"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { useRouter } from "next/navigation";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,85 +14,120 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 const formSchema = z.object({
-  vendorCode: z.string().min(4, {
-    message: "Vendor code must be at least 4 numbers.",
+  vendor: z.string().min(1, {
+    message: "Vendor is required",
   }),
-  department: z.string().min(1),
-})
+  department: z.string().min(1, {
+    message: "Product type is required",
+  }),
+  numberOfSKUS: z.coerce.number().positive(),
+});
 
 export function ProfileForm() {
+  const router = useRouter();
+  // 1. Define your form.
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      vendor: "",
+      department: "",
+      numberOfSKUS: 1,
+    },
+  });
 
-    const router = useRouter();
-    // 1. Define your form.
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-          vendorCode: "",
-          department: ""
-        },
-      })
-     
-      // 2. Define a submit handler.
-      function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        if (values.vendorCode === "2200") {
-            router.push("/smart")
-        }
-        console.log(values.vendorCode)
-      }
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    if (values.vendor === "HP") {
+      router.push("/smart");
+    }
+    console.log(values.vendor);
+  }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" noValidate>
         <FormField
           control={form.control}
-          name="vendorCode"
+          name="vendor"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Vendor Code</FormLabel>
+              <FormLabel>Vendor</FormLabel>
               <FormControl>
-                <Input placeholder="#000000" {...field} />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="HP">HP</SelectItem>
+                    <SelectItem value="Apple">Apple</SelectItem>
+                    <SelectItem value="LG">LG</SelectItem>
+                  </SelectContent>
+                </Select>
               </FormControl>
-              <FormDescription>
-                Enter vendor code.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-                  <FormField
-                    control={form.control}
-                    name="department"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Product Type</FormLabel>
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="futureshop">TV</SelectItem>
-                              <SelectItem value="bestbuy">Computer</SelectItem>
-                              <SelectItem value="shared">Laptop</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+        <FormField
+          control={form.control}
+          name="department"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Product Type</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="futureshop">TV</SelectItem>
+                    <SelectItem value="bestbuy">Computer</SelectItem>
+                    <SelectItem value="shared">Laptop</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="numberOfSKUS"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel># of SKUs (Max 50)</FormLabel>
+              <FormControl>
+                <Input 
+                  type="number"
+                  {...field}
+                  min={1}
+                ></Input>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button type="submit">Submit</Button>
       </form>
     </Form>
-  )
+  );
 }
