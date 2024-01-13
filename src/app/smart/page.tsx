@@ -35,6 +35,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import { useEffect, useState } from "react";
 
 const formSchema = z.object({
   VPN: z
@@ -97,6 +98,8 @@ const formSchema = z.object({
   heightUnboxed: z.coerce.number().positive(),
   lengthUnboxed: z.coerce.number().positive(),
   weightUnboxed: z.coerce.number().positive(),
+  casepack: z.coerce.number().positive(),
+  innerpack: z.coerce.number().positive(),
   forIndividualSale: z.string().min(1, {
     message: "Please select one.",
   }),
@@ -141,7 +144,13 @@ const formSchema = z.object({
   productCondition: z.string().min(1),
 });
 
+function validateInnerPack(innerpack: number, casepack: number): boolean {
+  return innerpack <= casepack;
+}
+
 export default function Smart() {
+  const [maxInnerpack, setMaxInnerpack] = useState<number>(0);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -153,16 +162,18 @@ export default function Smart() {
       brand: "",
       model: "",
       manufacturer: "",
-      unitCost: 1,
-      retailPrice: 1,
-      widthBoxed: 0.01,
-      heightBoxed: 0.01,
-      lengthBoxed: 0.01,
-      weightBoxed: 0.01,
-      widthUnboxed: 0.01,
-      heightUnboxed: 0.01,
-      lengthUnboxed: 0.01,
-      weightUnboxed: 0.01,
+      unitCost: 0,
+      retailPrice: 0,
+      widthBoxed: 0,
+      heightBoxed: 0,
+      lengthBoxed: 0,
+      weightBoxed: 0,
+      widthUnboxed: 0,
+      heightUnboxed: 0,
+      lengthUnboxed: 0,
+      weightUnboxed: 0,
+      casepack: 0,
+      innerpack: 0,
       skuRequiredAdvance: "",
       ftpVideoLocation: "",
       onproofFTPFileLocation: "",
@@ -173,6 +184,11 @@ export default function Smart() {
       featuresAndBenefits: "",
     },
   });
+
+  useEffect(() => {
+    // Update maxInnerpack when casepack changes
+    setMaxInnerpack(form.getValues("casepack"));
+  }, [form.watch("casepack")]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -381,7 +397,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="retailPrice"
                     render={({ field }) => (
@@ -395,7 +411,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="widthBoxed"
                     render={({ field }) => (
@@ -409,7 +425,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="heightBoxed"
                     render={({ field }) => (
@@ -423,7 +439,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="lengthBoxed"
                     render={({ field }) => (
@@ -437,7 +453,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="weightBoxed"
                     render={({ field }) => (
@@ -451,7 +467,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="widthUnboxed"
                     render={({ field }) => (
@@ -465,7 +481,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="heightUnboxed"
                     render={({ field }) => (
@@ -479,7 +495,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="lengthUnboxed"
                     render={({ field }) => (
@@ -493,7 +509,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="weightUnboxed"
                     render={({ field }) => (
@@ -506,13 +522,35 @@ export default function Smart() {
                     )}
                   />
                 </TableCell>
-                
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="casepack"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="innerpack"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} max={maxInnerpack}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
+
                 <TableCell>
                   <Input></Input>
                 </TableCell>
