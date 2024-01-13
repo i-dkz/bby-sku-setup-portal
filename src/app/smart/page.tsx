@@ -37,36 +37,66 @@ import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 
 const formSchema = z.object({
-  VPN: z.string().min(1).max(20),
-  shortDescription: z.string().min(1).max(20),
-  longDescription: z.string().min(1).max(40),
+  VPN: z
+    .string()
+    .min(1, { message: "Required" })
+    .max(20, { message: "VPN cannot exceed 20 characters" }),
+  shortDescription: z
+    .string()
+    .min(1, { message: "Required" })
+    .max(20, { message: "Short description cannot exceed 20 characters" }),
+  longDescription: z
+    .string()
+    .min(1, { message: "Required" })
+    .max(40, { message: "Long description cannot exceed 20 characters" }),
   UPC: z
     .string()
     .min(12, {
-      message: "UPC must be a minimum of 12 characters.",
+      message: "UPC must be a minimum of 12 digits.",
     })
     .max(13, {
-      message: "UPC exceeds 13 characters.",
+      message: "UPC exceeds 13 digits.",
     }),
   secondaryUPC: z
     .string()
     .min(12, {
-      message: "UPC must be a minimum of 12 characters.",
+      message: "UPC must be a minimum of 12 digits.",
     })
     .max(13, {
-      message: "UPC exceeds 13 characters.",
+      message: "UPC exceeds 13 digits.",
     }),
-  brand: z.string().min(1, {
-    message: "Please select one.",
-  }),
-  modelNumber: z
+  brand: z
     .string()
     .min(1, {
-      message: "Please fill out this field.",
+      message: "Required.",
+    })
+    .max(20, { message: "Brand cannot exceed 20 characters" }),
+  model: z
+    .string()
+    .min(1, {
+      message: "Required.",
     })
     .max(20, {
-      message: "Model number exceeds 20 characters.",
+      message: "Model cannot exceed 20 characters.",
     }),
+  manufacturer: z
+    .string()
+    .min(1, {
+      message: "Required.",
+    })
+    .max(20, {
+      message: "Manufacturer cannot exceed 20 characters.",
+    }),
+  unitCost: z.coerce.number().positive(),
+  retailPrice: z.coerce.number().positive(),
+  widthBoxed: z.coerce.number().positive(),
+  heightBoxed: z.coerce.number().positive(),
+  lengthBoxed: z.coerce.number().positive(),
+  weightBoxed: z.coerce.number().positive(),
+  widthUnboxed: z.coerce.number().positive(),
+  heightUnboxed: z.coerce.number().positive(),
+  lengthUnboxed: z.coerce.number().positive(),
+  weightUnboxed: z.coerce.number().positive(),
   forIndividualSale: z.string().min(1, {
     message: "Please select one.",
   }),
@@ -109,18 +139,30 @@ const formSchema = z.object({
   }),
   embargoDate: z.date().optional(),
   productCondition: z.string().min(1),
-  unitCost: z.string().transform(value => parseFloat(value))
 });
-
 
 export default function Smart() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      UPC: "",
-      brand: "",
-      modelNumber: "",
+      VPN: "",
+      shortDescription: "",
       longDescription: "",
+      UPC: "",
+      secondaryUPC: "",
+      brand: "",
+      model: "",
+      manufacturer: "",
+      unitCost: 1,
+      retailPrice: 1,
+      widthBoxed: 0.01,
+      heightBoxed: 0.01,
+      lengthBoxed: 0.01,
+      weightBoxed: 0.01,
+      widthUnboxed: 0.01,
+      heightUnboxed: 0.01,
+      lengthUnboxed: 0.01,
+      weightUnboxed: 0.01,
       skuRequiredAdvance: "",
       ftpVideoLocation: "",
       onproofFTPFileLocation: "",
@@ -137,7 +179,7 @@ export default function Smart() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
-    console.log(values.UPC, values.brand, values.modelNumber);
+    console.log(values.UPC, values.brand);
   }
 
   return (
@@ -212,39 +254,14 @@ export default function Smart() {
             </TableHeader>
             <TableBody>
               <TableRow>
-                
-              <TableCell>
-                  <Input></Input>
-                </TableCell>
                 <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
-                    name="unitCost"
+                    name="VPN"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="#000000" {...field} />
+                          <Input {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -252,32 +269,244 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="shortDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="longDescription"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="UPC"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} type="text" pattern="\d{12}" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="secondaryUPC"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} type="text" pattern="\d{12}" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="brand"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="model"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="manufacturer"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="unitCost"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                <FormField
+                    control={form.control}
+                    name="retailPrice"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="widthBoxed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="heightBoxed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="lengthBoxed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="weightBoxed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="widthUnboxed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="heightUnboxed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="lengthUnboxed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                <FormField
+                    control={form.control}
+                    name="weightUnboxed"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                
                 <TableCell>
                   <Input></Input>
                 </TableCell>
@@ -378,7 +607,7 @@ export default function Smart() {
                 <TableCell>
                   <FormField
                     control={form.control}
-                    name="modelNumber"
+                    name="model"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
@@ -552,7 +781,7 @@ export default function Smart() {
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
@@ -661,7 +890,7 @@ export default function Smart() {
                                 ) : (
                                   <span>Pick a date</span>
                                 )}
-                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
                               </Button>
                             </FormControl>
                           </PopoverTrigger>
@@ -720,11 +949,12 @@ export default function Smart() {
                     )}
                   />
                 </TableCell>
-
               </TableRow>
             </TableBody>
           </Table>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="m-4">
+            Next
+          </Button>
         </form>
       </Form>
     </main>

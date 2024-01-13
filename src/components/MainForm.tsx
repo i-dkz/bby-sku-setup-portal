@@ -50,7 +50,7 @@ export function ProfileForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    if (values.vendor === "HP") {
+    if (values.vendor === "Asus") {
       router.push("/smart");
     }
     console.log(values.vendor);
@@ -74,9 +74,10 @@ export function ProfileForm() {
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="HP">HP</SelectItem>
+                    <SelectItem value="Asus">Asus</SelectItem>
                     <SelectItem value="Apple">Apple</SelectItem>
                     <SelectItem value="LG">LG</SelectItem>
+                    <SelectItem value="HP">HP</SelectItem>
                   </SelectContent>
                 </Select>
               </FormControl>
