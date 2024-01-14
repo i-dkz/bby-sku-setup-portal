@@ -100,6 +100,12 @@ const formSchema = z.object({
   weightUnboxed: z.coerce.number().positive(),
   casepack: z.coerce.number().positive(),
   innerpack: z.coerce.number().positive(),
+  unitCostAdditional1: z.coerce.number().optional(),
+  casepackAdditional1: z.coerce.number().optional(),
+  innerpackAdditional1: z.coerce.number().optional(),
+  unitCostAdditional2: z.coerce.number().optional(),
+  casepackAdditional2: z.coerce.number().optional(),
+  innerpackAdditional2: z.coerce.number().optional(),
   forIndividualSale: z.string().min(1, {
     message: "Please select one.",
   }),
@@ -144,12 +150,11 @@ const formSchema = z.object({
   productCondition: z.string().min(1),
 });
 
-function validateInnerPack(innerpack: number, casepack: number): boolean {
-  return innerpack <= casepack;
-}
 
 export default function Smart() {
   const [maxInnerpack, setMaxInnerpack] = useState<number>(0);
+  const [maxInnerpack1, setMaxInnerpack1] = useState<number>(0);
+  const [maxInnerpack2, setMaxInnerpack2] = useState<number>(0);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -174,6 +179,12 @@ export default function Smart() {
       weightUnboxed: 0,
       casepack: 0,
       innerpack: 0,
+      unitCostAdditional1: 0,
+      casepackAdditional1: 0,
+      innerpackAdditional1: 0,
+      unitCostAdditional2: 0,
+      casepackAdditional2: 0,
+      innerpackAdditional2: 0,
       skuRequiredAdvance: "",
       ftpVideoLocation: "",
       onproofFTPFileLocation: "",
@@ -187,8 +198,10 @@ export default function Smart() {
 
   useEffect(() => {
     // Update maxInnerpack when casepack changes
-    setMaxInnerpack(form.getValues("casepack"));
-  }, [form.watch("casepack")]);
+    setMaxInnerpack(form.getValues("casepack") as number);
+    setMaxInnerpack1(form.getValues("casepackAdditional1") || 0);
+    setMaxInnerpack2(form.getValues("casepackAdditional2") || 0);
+  }, [form.watch("casepack"), form.watch("casepackAdditional1"), form.watch("casepackAdditional2")]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -550,25 +563,92 @@ export default function Smart() {
                     )}
                   />
                 </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="unitCostAdditional1"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="casepackAdditional1"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="innerpackAdditional1"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} max={maxInnerpack1}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="unitCostAdditional2"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="casepackAdditional2"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="innerpackAdditional2"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input type="number" {...field} max={maxInnerpack2}/>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
 
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
+                
                 <TableCell>
                   <Input></Input>
                 </TableCell>
