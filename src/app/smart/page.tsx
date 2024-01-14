@@ -106,6 +106,14 @@ const formSchema = z.object({
   unitCostAdditional2: z.coerce.number().optional(),
   casepackAdditional2: z.coerce.number().optional(),
   innerpackAdditional2: z.coerce.number().optional(),
+  frenchCompliant: z.string().min(1, { message: "Required" }),
+  shippableToQuebec: z.string().min(1, { message: "Required" }),
+  energyStar: z.string().min(1, { message: "Required" }),
+  refurbished: z.string().min(1, { message: "Required" }),
+  consignment: z.string().min(1, { message: "Required" }),
+  softwarePlatform: z.string(),
+  streetDate: z.date(),
+  productWarrantyDays: z.string(),
   forIndividualSale: z.string().min(1, {
     message: "Please select one.",
   }),
@@ -150,7 +158,6 @@ const formSchema = z.object({
   productCondition: z.string().min(1),
 });
 
-
 export default function Smart() {
   const [maxInnerpack, setMaxInnerpack] = useState<number>(0);
   const [maxInnerpack1, setMaxInnerpack1] = useState<number>(0);
@@ -185,6 +192,12 @@ export default function Smart() {
       unitCostAdditional2: 0,
       casepackAdditional2: 0,
       innerpackAdditional2: 0,
+      frenchCompliant: "",
+      shippableToQuebec: "",
+      energyStar: "",
+      refurbished: "",
+      consignment: "",
+      productWarrantyDays: "365",
       skuRequiredAdvance: "",
       ftpVideoLocation: "",
       onproofFTPFileLocation: "",
@@ -201,7 +214,11 @@ export default function Smart() {
     setMaxInnerpack(form.getValues("casepack") as number);
     setMaxInnerpack1(form.getValues("casepackAdditional1") || 0);
     setMaxInnerpack2(form.getValues("casepackAdditional2") || 0);
-  }, [form.watch("casepack"), form.watch("casepackAdditional1"), form.watch("casepackAdditional2")]);
+  }, [
+    form.watch("casepack"),
+    form.watch("casepackAdditional1"),
+    form.watch("casepackAdditional2"),
+  ]);
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -556,7 +573,7 @@ export default function Smart() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field} max={maxInnerpack}/>
+                          <Input type="number" {...field} max={maxInnerpack} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -570,7 +587,7 @@ export default function Smart() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field}/>
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -584,7 +601,7 @@ export default function Smart() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field}/>
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -598,7 +615,7 @@ export default function Smart() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field} max={maxInnerpack1}/>
+                          <Input type="number" {...field} max={maxInnerpack1} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -612,7 +629,7 @@ export default function Smart() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field}/>
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -626,7 +643,7 @@ export default function Smart() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field}/>
+                          <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -640,7 +657,7 @@ export default function Smart() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input type="number" {...field} max={maxInnerpack2}/>
+                          <Input type="number" {...field} max={maxInnerpack2} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -648,30 +665,210 @@ export default function Smart() {
                   />
                 </TableCell>
 
-                
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="frenchCompliant"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="shippableToQuebec"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="energyStar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="refurbished"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="consignment"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+
                 <TableCell>
                   <Input></Input>
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="streetDate"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-auto pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={field.onChange}
+                              disabled={(date) => date < new Date()}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
-                  <Input></Input>
+                  <FormField
+                    control={form.control}
+                    name="productWarrantyDays"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="0">0</SelectItem>
+                              <SelectItem value="30">30</SelectItem>
+                              <SelectItem value="45">45</SelectItem>
+                              <SelectItem value="60">60</SelectItem>
+                              <SelectItem value="90">90</SelectItem>
+                              <SelectItem value="120">120</SelectItem>
+                              <SelectItem value="180">180</SelectItem>
+                              <SelectItem value="182">182</SelectItem>
+                              <SelectItem value="270">270</SelectItem>
+                              <SelectItem value="365">365</SelectItem>
+                              <SelectItem value="548">548</SelectItem>
+                              <SelectItem value="730">730</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
                   <Input></Input>
