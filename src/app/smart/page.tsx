@@ -116,6 +116,11 @@ const formSchema = z.object({
   productWarrantyDays: z.string(),
   productWarrantyCoverage: z.string(),
   extendedPartsWarranty: z.string(),
+  returnRestrictions: z.string(),
+  expirationDate: z.string(),
+  shelfLife: z.string(),
+  dataFlag: z.string(),
+  dangerousProduct: z.string(),
   forIndividualSale: z.string().min(1, {
     message: "Please select one.",
   }),
@@ -276,7 +281,6 @@ export default function Smart() {
                 <TableHead>Product Warranty Coverage</TableHead>
                 <TableHead>Extended Parts Warranty</TableHead>
                 <TableHead>Return Restrictions</TableHead>
-                <TableHead>Embargo Date</TableHead>
                 <TableHead>Expiration Date/Lot Number</TableHead>
                 <TableHead>Shelf Life</TableHead>
                 <TableHead>Data Flag</TableHead>
@@ -796,7 +800,7 @@ export default function Smart() {
                 </TableCell>
 
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="softwarePlatform"
                     render={({ field }) => (
@@ -886,7 +890,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="productWarrantyCoverage"
                     render={({ field }) => (
@@ -900,10 +904,13 @@ export default function Smart() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="0">Parts & Labour</SelectItem>
-                              <SelectItem value="30">Labour Only</SelectItem>
-                              <SelectItem value="45">Parts Only</SelectItem>
-
+                              <SelectItem value="parts-and-labour">
+                                Parts & Labour
+                              </SelectItem>
+                              <SelectItem value="labour">
+                                Labour Only
+                              </SelectItem>
+                              <SelectItem value="parts">Parts Only</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -913,7 +920,7 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="extendedPartsWarranty"
                     render={({ field }) => (
@@ -927,16 +934,13 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
-                </TableCell>
-                <TableCell>
                   <FormField
                     control={form.control}
-                    name="UPC"
+                    name="returnRestrictions"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="#000000" {...field} />
+                          <Input {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -946,7 +950,7 @@ export default function Smart() {
                 <TableCell>
                   <FormField
                     control={form.control}
-                    name="brand"
+                    name="expirationDate"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
@@ -955,12 +959,16 @@ export default function Smart() {
                             defaultValue={field.value}
                           >
                             <SelectTrigger className="w-[180px]">
-                              <SelectValue placeholder="" />
+                              <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="futureshop">F</SelectItem>
-                              <SelectItem value="bestbuy">B</SelectItem>
-                              <SelectItem value="shared">S</SelectItem>
+                              <SelectItem value="exp-date">
+                                Expiration Date
+                              </SelectItem>
+                              <SelectItem value="lot-num">
+                                Lot Number
+                              </SelectItem>
+                              <SelectItem value="both">Both</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -972,11 +980,33 @@ export default function Smart() {
                 <TableCell>
                   <FormField
                     control={form.control}
-                    name="model"
+                    name="shelfLife"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="" {...field} />
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="1-to-6">1-6 Months</SelectItem>
+                              <SelectItem value="6-to-12">
+                                6-12 Months
+                              </SelectItem>
+                              <SelectItem value="12-to-18">
+                                12-18 Months
+                              </SelectItem>
+                              <SelectItem value="18-to-24">
+                                18-24 Months
+                              </SelectItem>
+                              <SelectItem value="24-plus">
+                                24+ Months
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -986,11 +1016,47 @@ export default function Smart() {
                 <TableCell>
                   <FormField
                     control={form.control}
-                    name="longDescription"
+                    name="dataFlag"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input placeholder="" {...field} />
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <FormField
+                    control={form.control}
+                    name="dangerousProduct"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue placeholder="" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
