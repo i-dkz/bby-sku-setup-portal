@@ -114,6 +114,8 @@ const formSchema = z.object({
   softwarePlatform: z.string(),
   streetDate: z.date(),
   productWarrantyDays: z.string(),
+  productWarrantyCoverage: z.string(),
+  extendedPartsWarranty: z.string(),
   forIndividualSale: z.string().min(1, {
     message: "Please select one.",
   }),
@@ -198,6 +200,8 @@ export default function Smart() {
       refurbished: "",
       consignment: "",
       productWarrantyDays: "365",
+      productWarrantyCoverage: "",
+      extendedPartsWarranty: "",
       skuRequiredAdvance: "",
       ftpVideoLocation: "",
       onproofFTPFileLocation: "",
@@ -792,7 +796,18 @@ export default function Smart() {
                 </TableCell>
 
                 <TableCell>
-                  <Input></Input>
+                <FormField
+                    control={form.control}
+                    name="softwarePlatform"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
                   <FormField
@@ -871,10 +886,45 @@ export default function Smart() {
                   />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                <FormField
+                    control={form.control}
+                    name="productWarrantyCoverage"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger className="w-[180px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="0">Parts & Labour</SelectItem>
+                              <SelectItem value="30">Labour Only</SelectItem>
+                              <SelectItem value="45">Parts Only</SelectItem>
+
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
-                  <Input></Input>
+                <FormField
+                    control={form.control}
+                    name="extendedPartsWarranty"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </TableCell>
                 <TableCell>
                   <Input></Input>
