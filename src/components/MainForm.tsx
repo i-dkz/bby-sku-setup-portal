@@ -31,7 +31,7 @@ const formSchema = z.object({
   department: z.string().min(1, {
     message: "Product type is required",
   }),
-  numberOfSKUS: z.coerce.number().positive(),
+  numberOfSKUS: z.coerce.number().positive().max(50, {message:"Cannot exceed 50 SKUs at a time"}),
 });
 
 export function ProfileForm() {
@@ -115,12 +115,13 @@ export function ProfileForm() {
           name="numberOfSKUS"
           render={({ field }) => (
             <FormItem>
-              <FormLabel># of SKUs (Max 50)</FormLabel>
+              <FormLabel># of SKUs</FormLabel>
               <FormControl>
                 <Input 
                   type="number"
                   {...field}
                   min={1}
+                  max={50}
                 ></Input>
               </FormControl>
               <FormMessage />
