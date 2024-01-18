@@ -31,7 +31,7 @@ const formSchema = z.object({
   department: z.string().min(1, {
     message: "Product type is required",
   }),
-  numberOfSKUS: z.coerce.number().positive().max(50, {message:"Cannot exceed 50 SKUs at a time"}),
+  numberOfSKUS: z.coerce.number().min(1, {message: "SKUs must be greater than 0"}).max(50, {message:"Cannot exceed 50 SKUs at a time"}),
 });
 
 export function ProfileForm() {
