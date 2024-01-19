@@ -12,8 +12,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { FaCheck } from "react-icons/fa6";
+
 export function ModeToggle() {
-  const { setTheme } = useTheme()
+  const { setTheme, theme } = useTheme()
+
+  console.log(theme)
 
   return (
     <DropdownMenu>
@@ -26,13 +30,13 @@ export function ModeToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          Light
+          {theme === "light" ? <div className="flex items-center gap-2">Light <FaCheck /></div>   : "Light"}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Dark
+          {theme === "dark" ? <div className="flex items-center gap-2">Dark <FaCheck /></div>   : "Dark"}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          System
+        {theme === "system" ? <div className="flex items-center gap-2">System <FaCheck /></div>   : "System"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

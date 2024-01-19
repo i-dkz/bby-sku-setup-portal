@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { useNumStore } from "@/store/NumStore";
 
 const formSchema = z.object({
   vendor: z.string().min(1, {
@@ -31,10 +32,12 @@ const formSchema = z.object({
   department: z.string().min(1, {
     message: "Product type is required",
   }),
-  numberOfSKUS: z.coerce.number().min(1, {message: "SKUs must be greater than 0"}).max(50, {message:"Cannot exceed 50 SKUs at a time"}),
+  numberOfSKUS: z.coerce.number().min(1, {message: "SKUs must be greater than 0 "}).max(50, {message:"Cannot exceed 50 SKUs at a time"}),
 });
 
 export function ProfileForm() {
+  const {setSelectedNum} = useNumStore();
+
   const router = useRouter();
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -51,8 +54,11 @@ export function ProfileForm() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     if (values.vendor === "Asus") {
-      router.push("/smart");
+      setSelectedNum(values.numberOfSKUS);
+      router.push("/example");
     }
+
+    
     console.log(values.vendor);
   }
 
