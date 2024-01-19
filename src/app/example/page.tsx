@@ -47,7 +47,7 @@ export default function Example() {
         <div className="flex items-center justify-center w-56 text-center border-b border-r h-14">Shelf Life</div>
         <div className="flex items-center justify-center w-56 text-center border-b border-r h-14">Data Flag</div>
         <div className="flex items-center justify-center w-56 text-center border-b border-r h-14">Dangerous Product/Material</div>
-        <div className="flex items-center justify-center w-56 text-center border-b border-r h-14">Expiration Date/Lot Number</div>
+       
       </div>
       <Row></Row>
     </main>

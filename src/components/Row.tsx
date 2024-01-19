@@ -3,7 +3,7 @@ import {
   SubmitHandler,
   useForm,
   FieldValues,
-  useWatch
+  useWatch,
 } from "react-hook-form";
 import { Button } from "./ui/button";
 import { useNumStore } from "@/store/NumStore";
@@ -31,7 +31,6 @@ export default function Row() {
   const [maxInnerpack, setMaxInnerpack] = useState<number>(0);
   const [maxInnerpack1, setMaxInnerpack1] = useState<number>(0);
   const [maxInnerpack2, setMaxInnerpack2] = useState<number>(0);
-  
 
   const updateMaxInnerpack = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -45,7 +44,6 @@ export default function Row() {
     const value = event.target.value;
     setMaxInnerpack2(Number(value));
   };
-
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data); // Handle your form submission logic here
@@ -663,6 +661,141 @@ export default function Row() {
                     <SelectItem value="365">365</SelectItem>
                     <SelectItem value="548">548</SelectItem>
                     <SelectItem value="730">730</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`productWarrantyCoverage-${index}`}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="parts-and-labour">
+                      Parts & Labour
+                    </SelectItem>
+                    <SelectItem value="labour">Labour Only</SelectItem>
+                    <SelectItem value="parts">Parts Only</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`extendedPartsWarranty-${index}`}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  min={0}
+                  maxLength={256}
+                />
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`returnRestrictions-${index}`}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  min={0}
+                  maxLength={256}
+                />
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`expirationDateLotNum-${index}`}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="exp-date">Expiration Date</SelectItem>
+                    <SelectItem value="lot-num">Lot Number</SelectItem>
+                    <SelectItem value="both">Both</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`shelfLife-${index}`}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-to-6">1-6 Months</SelectItem>
+                    <SelectItem value="6-to-12">6-12 Months</SelectItem>
+                    <SelectItem value="12-to-18">12-18 Months</SelectItem>
+                    <SelectItem value="18-to-24">18-24 Months</SelectItem>
+                    <SelectItem value="24-plus">24+ Months</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`dataFlag-${index}`}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="yes">Yes</SelectItem>
+                    <SelectItem value="no">No</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`dangerousProduct-${index}`}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="yes">Yes</SelectItem>
+                    <SelectItem value="no">No</SelectItem>
                   </SelectContent>
                 </Select>
               )}
