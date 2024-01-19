@@ -17,8 +17,6 @@ import { FaCheck } from "react-icons/fa6";
 export function ModeToggle() {
   const { setTheme, theme } = useTheme()
 
-  console.log(theme)
-
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
