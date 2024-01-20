@@ -1083,7 +1083,7 @@ export default function Row() {
           </div>
         </div>
       ))}
-      <Button type="submit">Submit</Button>
+      <Button type="submit" className="m-4">Next</Button>
     </form>
   );
 }
