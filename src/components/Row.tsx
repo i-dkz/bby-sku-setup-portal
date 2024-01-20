@@ -22,6 +22,53 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
+
+
+
+interface FormData {
+  VPN: string;
+  shortDescription: string;
+  // longDescription: string;
+  // UPC: string;
+  // secondaryUPC: string;
+  // brand: string;
+  // model: string;
+  // manufacturer: string;
+  // unitCost: number;
+  // boxedWidth: number;
+  // boxedHeight: number;
+  // boxedLength: number;
+  // boxedWeight: number;
+  // unboxedWidth: number;
+  // unboxedHeight: number;
+  // unboxedLength: number;
+  // unboxedWeight: number;
+  // casepack: number;
+  // innerpack: number;
+  // additionalUnitCost1: number;
+  // additionalCasepack1: number;
+  // additionalInnerpack1: number;
+  // additionalUnitCost2: number;
+  // additionalCasepack2: number;
+  // additionalInnerpack2: number;
+  // frenchCompliant: string;
+  // shippableToQuebec: string;
+  // energyStar: string;
+  // refurbished: string;
+  // consignment: string;
+  // softwarePlatform: string;
+  // productWarrantyDays: string;
+  // productWarrantyCoverage: string;
+  // extendedPartsWarranty: string;
+  // returnRestrictions: string;
+  // expirationDateLotNum: string;
+  // shelfLife: string;
+  // dataFlag: string;
+  // dangerousProduct: string;
+
+}
+
+
 export default function Row() {
   const { selectedNum } = useNumStore();
   const { handleSubmit, control } = useForm();
@@ -48,10 +95,41 @@ export default function Row() {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log(data); // Handle your form submission logic here
     console.log(data["VPN-0"]);
+
+    const formData: FormData = {
+      // shortDescription: (data.target as any)["shortDescription-0"].value,
+      VPN: data["VPN-0"],
+      shortDescription: data["shortDescription-0"]
+    };
+  
+    exportToCSV(formData);
+    // Handle any other form submission logic here
+  };
+
+  const exportToCSV = (data: FormData) => {
+    const csvContent = convertToCSV(data);
+    downloadCSV(csvContent, "I416NS_zflentge093248234.csv");
+  };
+  
+  const convertToCSV = (data: FormData) => {
+    const headers = Object.keys(data);
+    const values = Object.values(data);
+    const csvRows = [headers.join(","), values.join(",")];
+    return csvRows.join("\n");
+  };
+  
+  const downloadCSV = (content: string, fileName: string) => {
+    const blob = new Blob([content], { type: "text/csv" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)} name="myForm">
       {Array.from({ length: selectedNum }).map((_, index) => (
         <div className="flex w-[10000px]" key={index}>
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">

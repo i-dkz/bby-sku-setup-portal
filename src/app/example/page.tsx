@@ -1,5 +1,6 @@
 "use client";
 import Row from "@/components/Row";
+import MyForm from "@/components/myForm";
 
 export default function Example() {
 
@@ -50,6 +51,7 @@ export default function Example() {
        
       </div>
       <Row></Row>
+
     </main>
   );
-}
+} 
