@@ -255,19 +255,21 @@ export default function Row() {
       FF_RTV_DAYS: [],
     };
 
-    // if the array for a key in formData has a default value, ensure the array has selectedNum amount of those default values to match the number of rows
     Object.keys(formData).forEach((key) => {
       const currentValue = formData[key];
-      if (Array.isArray(currentValue) && currentValue.length < selectedNum) {
+
+      // check if the key has a default value, if yes, add default values to match the number of rows
+      if (currentValue.length === 1) {
         const diff = selectedNum - currentValue.length;
-        formData[key] = [...currentValue, ...Array(diff).fill(formData[key][0])];
+
+        // Duplicate the values to match selectedNum
+        formData[key] = [...currentValue, ...Array(diff).fill(currentValue[0])];
       }
-    });
+    })
+
 
     // matching the data collected from the form to the db attribute
     Object.keys(data).forEach((key) => {
-      console.log(key, data[key]);
-
       if (isCapitalized(key)) {
         const splitKey = key.split("-")[0];
         formData[splitKey].push(data[key]);
@@ -288,7 +290,6 @@ export default function Row() {
     const values = Object.values(data);
 
     let str: string = "";
-    let rows: any[] = [];
 
     Array.from({ length: selectedNum }).map((_, index) =>
       values.forEach((val) => {
@@ -301,8 +302,6 @@ export default function Row() {
     );
 
     const csvRows = [headers.join(","), str.trim()];
-
-    // console.log(csvRows)
     return csvRows.join("\n");
   };
 
