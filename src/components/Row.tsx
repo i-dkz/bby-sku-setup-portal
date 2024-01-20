@@ -78,6 +78,8 @@ export default function Row() {
   };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    
+    // these are the names of the attributes in the CO4P database so naming conventions are snakecase
     const formData: FormData = {
       UPC: [],
       VPN: [],
@@ -134,7 +136,7 @@ export default function Row() {
 
   const exportToCSV = (data: FormData) => {
     const csvContent = convertToCSV(data);
-    downloadCSV(csvContent, "I416NS_zflentge093248234.csv");
+    downloadCSV(csvContent, "I416NS_zflentge1.csv");
   };
 
   const convertToCSV = (data: FormData) => {
@@ -154,9 +156,11 @@ export default function Row() {
       }, str+="\n"
     ));
 
-    console.log(str);
+    
 
-    const csvRows = [headers.join(","), str];
+    const csvRows = [headers.join(","), str.trim()];
+
+    // console.log(csvRows)
     return csvRows.join("\n");
   };
 
