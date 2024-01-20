@@ -22,52 +22,47 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
-
-
-
 interface FormData {
   VPN: string;
   shortDescription: string;
-  // longDescription: string;
-  // UPC: string;
-  // secondaryUPC: string;
-  // brand: string;
-  // model: string;
-  // manufacturer: string;
-  // unitCost: number;
-  // boxedWidth: number;
-  // boxedHeight: number;
-  // boxedLength: number;
-  // boxedWeight: number;
-  // unboxedWidth: number;
-  // unboxedHeight: number;
-  // unboxedLength: number;
-  // unboxedWeight: number;
-  // casepack: number;
-  // innerpack: number;
-  // additionalUnitCost1: number;
-  // additionalCasepack1: number;
-  // additionalInnerpack1: number;
-  // additionalUnitCost2: number;
-  // additionalCasepack2: number;
-  // additionalInnerpack2: number;
-  // frenchCompliant: string;
-  // shippableToQuebec: string;
-  // energyStar: string;
-  // refurbished: string;
-  // consignment: string;
-  // softwarePlatform: string;
-  // productWarrantyDays: string;
-  // productWarrantyCoverage: string;
-  // extendedPartsWarranty: string;
-  // returnRestrictions: string;
-  // expirationDateLotNum: string;
-  // shelfLife: string;
-  // dataFlag: string;
-  // dangerousProduct: string;
-
+  longDescription: string;
+  UPC: string;
+  secondaryUPC: string;
+  brand: string;
+  model: string;
+  manufacturer: string;
+  unitCost: number;
+  boxedWidth: number;
+  boxedHeight: number;
+  boxedLength: number;
+  boxedWeight: number;
+  unboxedWidth: number;
+  unboxedHeight: number;
+  unboxedLength: number;
+  unboxedWeight: number;
+  casepack: number;
+  innerpack: number;
+  additionalUnitCost1: number;
+  additionalCasepack1: number;
+  additionalInnerpack1: number;
+  additionalUnitCost2: number;
+  additionalCasepack2: number;
+  additionalInnerpack2: number;
+  frenchCompliant: string;
+  shippableToQuebec: string;
+  energyStar: string;
+  refurbished: string;
+  consignment: string;
+  softwarePlatform: string;
+  productWarrantyDays: string;
+  productWarrantyCoverage: string;
+  extendedPartsWarranty: string;
+  returnRestrictions: string;
+  expirationDateLotNum: string;
+  shelfLife: string;
+  dataFlag: string;
+  dangerousProduct: string;
 }
-
 
 export default function Row() {
   const { selectedNum } = useNumStore();
@@ -97,11 +92,47 @@ export default function Row() {
     console.log(data["VPN-0"]);
 
     const formData: FormData = {
-      // shortDescription: (data.target as any)["shortDescription-0"].value,
       VPN: data["VPN-0"],
-      shortDescription: data["shortDescription-0"]
+      shortDescription: data["shortDescription-0"],
+      longDescription: data["longDescription-0"],
+      UPC: data["UPC-0"],
+      secondaryUPC: data["secondaryUPC-0"],
+      brand: data["brand-0"],
+      model: data["model-0"],
+      manufacturer: data["manufacturer-0"],
+      unitCost: data["unitCost-0"],
+      boxedWidth: data["boxedWidth-0"],
+      boxedHeight: data["boxedHeight-0"],
+      boxedLength: data["boxedLength-0"],
+      boxedWeight: data["boxedWeight-0"],
+      unboxedWidth: data["unboxedWidth-0"],
+      unboxedHeight: data["unboxedHeight-0"],
+      unboxedLength: data["unboxedLength-0"],
+      unboxedWeight: data["unboxedWeight-0"],
+      casepack: data["casepack-0"],
+      innerpack: data["innerpack-0"],
+      additionalUnitCost1: data["additionalUnitCost1-0"],
+      additionalCasepack1: data["additionalCasepack1-0"],
+      additionalInnerpack1: data["additionalInnerpack1-0"],
+      additionalUnitCost2: data["additionalUnitCost2-0"],
+      additionalCasepack2: data["additionalCasepack2-0"],
+      additionalInnerpack2: data["additionalInnerpack2-0"],
+      frenchCompliant: data["frenchCompliant-0"],
+      shippableToQuebec: data["shippableToQuebec-0"],
+      energyStar: data["energyStar-0"],
+      refurbished: data["refurbished-0"],
+      consignment: data["consignment-0"],
+      softwarePlatform: data["softwarePlatform-0"],
+      productWarrantyDays: data["productWarrantyDays-0"],
+      productWarrantyCoverage: data["productWarrantyCoverage-0"],
+      extendedPartsWarranty: data["extendedPartsWarranty-0"],
+      returnRestrictions: data["returnRestrictions-0"],
+      expirationDateLotNum: data["expirationDateLotNum-0"],
+      shelfLife: data["shelfLife-0"],
+      dataFlag: data["dataFlag-0"],
+      dangerousProduct: data["dangerousProduct-0"],
     };
-  
+
     exportToCSV(formData);
     // Handle any other form submission logic here
   };
@@ -110,14 +141,14 @@ export default function Row() {
     const csvContent = convertToCSV(data);
     downloadCSV(csvContent, "I416NS_zflentge093248234.csv");
   };
-  
+
   const convertToCSV = (data: FormData) => {
     const headers = Object.keys(data);
     const values = Object.values(data);
     const csvRows = [headers.join(","), values.join(",")];
     return csvRows.join("\n");
   };
-  
+
   const downloadCSV = (content: string, fileName: string) => {
     const blob = new Blob([content], { type: "text/csv" });
     const link = document.createElement("a");
