@@ -18,7 +18,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { cn } from "@/lib/utils";
 
 // this function checks if a string is capitalized, used to differentiate between CO4P db values and other values
@@ -265,14 +265,19 @@ export default function Row() {
         // Duplicate the values to match selectedNum
         formData[key] = [...currentValue, ...Array(diff).fill(currentValue[0])];
       }
-    })
-
+    });
 
     // matching the data collected from the form to the db attribute
     Object.keys(data).forEach((key) => {
       if (isCapitalized(key)) {
         const splitKey = key.split("-")[0];
-        formData[splitKey].push(data[key]);
+
+        // Format date values before pushing to the array
+        if (splitKey === "ENT_STREET_DATE" && isValid(data[key])) {
+          formData[splitKey].push(format(data[key], "yyyyMMddHHmmss"));
+        } else {
+          formData[splitKey].push(data[key]);
+        }
       }
     });
 
@@ -280,11 +285,15 @@ export default function Row() {
     // Handle any other form submission logic here
   };
 
+  // function takes the form data passes to convertToCSV function to get csv format, then passes to downloadCSV function
   const exportToCSV = (data: FormData) => {
     const csvContent = convertToCSV(data);
     downloadCSV(csvContent, "I416NS_zflentge1.csv");
   };
 
+  // function assigns the headers, then takes the values arrays and based on selectedNum, creates a comma separated string
+  // once the end is reached, a newline is appended to the end of the string
+  // then it returns the concatenated csv string of headers and values
   const convertToCSV = (data: FormData) => {
     const headers = Object.keys(data);
     const values = Object.values(data);
@@ -878,7 +887,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`streetDate-${index}`}
+              name={`ENT_STREET_DATE-${index}`}
               render={({ field }) => (
                 <Popover>
                   <PopoverTrigger asChild>
@@ -901,7 +910,7 @@ export default function Row() {
                     <Calendar
                       mode="single"
                       selected={field.value}
-                      onSelect={field.onChange}
+                      onSelect={(date) => field.onChange(date)}
                       disabled={(date) => date < new Date()}
                       initialFocus
                     />
