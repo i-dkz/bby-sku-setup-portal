@@ -21,48 +21,12 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
-interface FormData {
-  VPN: string;
-  shortDescription: string;
-  longDescription: string;
-  UPC: string;
-  secondaryUPC: string;
-  brand: string;
-  model: string;
-  manufacturer: string;
-  unitCost: number;
-  boxedWidth: number;
-  boxedHeight: number;
-  boxedLength: number;
-  boxedWeight: number;
-  unboxedWidth: number;
-  unboxedHeight: number;
-  unboxedLength: number;
-  unboxedWeight: number;
-  casepack: number;
-  innerpack: number;
-  additionalUnitCost1: number;
-  additionalCasepack1: number;
-  additionalInnerpack1: number;
-  additionalUnitCost2: number;
-  additionalCasepack2: number;
-  additionalInnerpack2: number;
-  frenchCompliant: string;
-  shippableToQuebec: string;
-  energyStar: string;
-  refurbished: string;
-  consignment: string;
-  softwarePlatform: string;
-  productWarrantyDays: string;
-  productWarrantyCoverage: string;
-  extendedPartsWarranty: string;
-  returnRestrictions: string;
-  expirationDateLotNum: string;
-  shelfLife: string;
-  dataFlag: string;
-  dangerousProduct: string;
+// this function checks if a string is capitalized, used to differentiate between CO4P db values and other values
+function isCapitalized(str: string) {
+  return str === str.toUpperCase();
 }
 
+// this is the row component, rows are dynamically rendered based on selectedNum and all the rows make up a form
 export default function Row() {
   const { selectedNum } = useNumStore();
   const { handleSubmit, control } = useForm();
@@ -78,56 +42,236 @@ export default function Row() {
   };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    
     // these are the names of the attributes in the CO4P database so naming conventions are snakecase
     const formData: FormData = {
       UPC: [],
+      UPC_TYPE: ["UPC-A"],
+      UPC1: [],
+      UPC_TYPE1: [],
+      UPC2: [],
+      UPC_TYPE2: [],
+      MANUFACTURER: [],
+      SKU_DESC: [],
+      SHORT_DESC: [],
+      DEPT: [15],
+      CLASS: [6],
+      SUBCLASS: [2],
+      ZONE_GROUP_ID: [2],
+      COST_ZONE_GROUP_ID: [1],
+      MERCHANDISE_IND: ["Y"],
+      STORE_ORD_MULT: ["C"],
+      FORECAST_IND: ["N"],
+      ORIGINAL_RETAIL: [],
+      RECOMMEND_RETAIL: [],
+      FS_PERF_CODE: [],
+      BBY_PERF_CODE: [],
+      SUPPLIER: [240086],
+      UNIT_COST: [],
       VPN: [],
-      shortDescription: [],
-      longDescription: [],
-      secondaryUPC: [],
-      brand: [],
-      model: [],
-      manufacturer: [],
-      unitCost: [],
-      retailPrice: [],
-      boxedWidth: [],
-      boxedHeight: [],
-      boxedLength: [],
-      boxedWeight: [],
-      unboxedWidth: [],
-      unboxedHeight: [],
-      unboxedLength: [],
-      unboxedWeight: [],
-      casepack: [],
-      innerpack: [],
-      additionalUnitCost1: [],
-      additionalCasepack1: [],
-      additionalInnerpack1: [],
-      additionalUnitCost2: [],
-      additionalCasepack2: [],
-      additionalInnerpack2: [],
-      frenchCompliant: [],
-      shippableToQuebec: [],
-      energyStar: [],
-      refurbished: [],
-      consignment: [],
-      softwarePlatform: [],
-      productWarrantyDays: [],
-      productWarrantyCoverage: [],
-      extendedPartsWarranty: [],
-      streetDate: [],
-      returnRestrictions: [],
-      expirationDateLotNum: [],
-      shelfLife: [],
-      dataFlag: [],
-      dangerousProduct: [],
+      SUPP_PACK_SIZE: [],
+      INNER_PACK_SIZE: [],
+      SHIP_CARTON_LEN: [],
+      SHIP_CARTON_HGT: [],
+      SHIP_CARTON_WID: [],
+      SHIP_CARTON_WT: [],
+      VENDOR_PROCESSING_TIME: [],
+      PRE_ORDER_DAYS: [],
+      PVT_LBL: [],
+      PVT_LBL_SOURCE: [],
+      LEAD_TIME: [7],
+      PURCHASE_UOM: ["EA"],
+      SUPP_LABEL: [],
+      CONSIGNMENT_RATE: [],
+      MIN_ORDER_QTY: [],
+      MAX_ORDER_QTY: [],
+      SUPP_COLOR: [],
+      SUPP_SIZE: [],
+      SUPPLIER1: [],
+      SUPP1_UNIT_COST: [],
+      SUPP1_PACK_SIZE: [],
+      SUPP1_INNER_PACK_SIZE: [],
+      SUPPLIER2: [],
+      SUPP2_UNIT_COST: [],
+      SUPP2_PACK_SIZE: [],
+      SUPP2_INNER_PACK_SIZE: [],
+      SUPPLIER3: [],
+      SUPP3_UNIT_COST: [],
+      SUPP3_PACK_SIZE: [],
+      SUPP3_INNER_PACK_SIZE: [],
+      SUPPLIER4: [],
+      SUPP4_UNIT_COST: [],
+      SUPP4_PACK_SIZE: [],
+      SUPP4_INNER_PACK_SIZE: [],
+      SUPPLIER5: [],
+      SUPP5_UNIT_COST: [],
+      SUPP5_PACK_SIZE: [],
+      SUPP5_INNER_PACK_SIZE: [],
+      SUPPLIER6: [],
+      SUPP6_UNIT_COST: [],
+      SUPP6_PACK_SIZE: [],
+      SUPP6_INNER_PACK_SIZE: [],
+      SUPPLIER7: [],
+      SUPP7_UNIT_COST: [],
+      SUPP7_PACK_SIZE: [],
+      SUPP7_INNER_PACK_SIZE: [],
+      SUPPLIER8: [],
+      SUPP8_UNIT_COST: [],
+      SUPP8_PACK_SIZE: [],
+      SUPP8_INNER_PACK_SIZE: [],
+      SUPPLIER9: [],
+      SUPP9_UNIT_COST: [],
+      SUPP9_PACK_SIZE: [],
+      SUPP9_INNER_PACK_SIZE: [],
+      SKU_TYPE: ["MERCH"],
+      SKU_OWNER: ["S"],
+      ENT_STREET_DATE: [],
+      PRE_BOOKED_IND: ["N"],
+      PB_START_DATE: [],
+      PB_END_DATE: [],
+      SOFTWARE_RATING: [],
+      SOFTWARE_PLATFORM: [],
+      BRAND_NAME: [],
+      MODEL_NO: [],
+      PRODUCT_TYPE: ["R"],
+      DELIVERABLE: ["N"],
+      WARRANTY_FLAG: ["Y"],
+      ACCESSORY: [],
+      SERIAL_REQUIRED: ["N"],
+      SERIALIZED_FORMAT: [],
+      ENT_CFG_CODE: [],
+      ENT_RELATIVE_SIZE: [],
+      RETURN_RESTRICTIONS_FS: ["N/A"],
+      IMPART_INFO_SHOPPER: ["N"],
+      S_UNIT_HEIGHT: [],
+      S_UNIT_WIDTH: [],
+      S_UNIT_LENGTH: [],
+      S_UNIT_WEIGHT: [],
+      ENT_ARTIST_ID: [],
+      CSP_TERM: [],
+      CSP_TYPE: [],
+      PSP_ACTIVE: [],
+      PSP_PRP_TYPE: [],
+      BUNDLE_IND: [],
+      CAN_MANUFACTURER_WARRANTY: ["N/A"],
+      EXT_PARTS_WARRANTY: ["N/A"],
+      MAKE: ["N/A"],
+      PEG_HOOK_FLAG: ["N"],
+      SKU_MARKET: ["B"],
+      NON_INVENTORY_SKU_TYPE: ["N"],
+      SERVICE_APPLICABLE_FLAG: [],
+      MIN_LAYAWAY_DEPOSIT: [20],
+      CSP_LOWEST_PRICE: [],
+      CSP_HIGHEST_PRICE: [],
+      AVAILABLE_FOR_SALE: [],
+      ASSESSMENT_REQUIRED: [],
+      CSP_POLICY: [],
+      SP1: [],
+      LOCALLY_INVENTORIED_PRODUCT: [],
+      THIRD_PARTY_IND: [],
+      SKU_SELL_UOM: ["EACH"],
+      ES_LABEL_NAME: [],
+      ES_LABEL_ID: [],
+      FS_IN_STOCK_DATE: [],
+      FS_OUT_OF_STOCK_DATE: [],
+      BBY_IN_STOCK_DATE: [],
+      BBY_OUT_OF_STOCK_DATE: [],
+      AUTO_DESTABLE: [],
+      RELATED_SKU1: [],
+      RELATED_SKU2: [],
+      COMPULSORY_KIT_FLAG: [],
+      BIN_NO: [],
+      SERVICEABLE_EXTERNALLY: [],
+      MANUFACTURER_WARRANTY: ["N"],
+      BRAND_TYPE: ["S"],
+      NO_DISCOUNT: ["N"],
+      STAFF_PURCHASE_ALLOWED: ["Y"],
+      DELETE_FLAG: [],
+      FRENCH_COMPLIANT: [],
+      AUTHORIZED_FOR_SALE: ["Y"],
+      LAYAWAY_DEPOSIT_ALLOWED: ["Y"],
+      ENERGY_STAR: ["Y"],
+      ALLOW_QTY_OVERRIDE: ["Y"],
+      MAX_QTY_ALLOWED: [],
+      PRICE_ENTRY_REQUIRED: ["N"],
+      RAINCHECK_ALLOWED: ["Y"],
+      RA_RETURN_POLICY_DAYS: [30],
+      RA_PRICE_MATCH_POLICY_DAYS: [30],
+      RA_SUPPORT_MNF_WRNTY: ["N"],
+      RA_SERVICE_UNDER_MNF_WRNTY: ["Y"],
+      RA_SERVICE_OUTSIDE_MNF_WRNTY: ["Y"],
+      RA_RTV_DEFECTIVE_DAYS: [0],
+      RA_RTV_OB_DAYS: [0],
+      RA_RESELL_AS_OB: ["Y"],
+      RA_PRODUCT_WRNTY_DAYS: [],
+      RA_SUPPLIER_CONTACT: [8886783688],
+      RA_PRIVACY_INSTRUCTION_CODE: [3],
+      RA_RETURNABLE: ["Y"],
+      RA_OB_RETURNABLE: ["Y"],
+      RA_TECH_CHECK_LEVEL: [1],
+      RA_ALERT_INFORMATION: [],
+      RA_SERIAL_REQ_FOR_RETURN: ["N"],
+      RA_SERIAL_REQ_FOR_RTV: ["N"],
+      RA_ALL_ACCESS_REQ_FOR_RTV: ["N"],
+      RA_REQUIRED_COMPONENTS: [],
+      RA_RESTOCK_FEE_PCT: [0],
+      RA_RAPID_EXCHANGEABLE: ["N"],
+      RA_RESELL: ["Y"],
+      RA_ALWAYS_RTV: ["N"],
+      RA_PROCESS_AT_MEDIA_DC: ["N"],
+      RA_LIQUIDATEABLE: ["N"],
+      RA_MUST_RECYCLE: ["N"],
+      RA_DISPOSE_IN_STORE: ["N"],
+      RA_RUN_DISPOSITION: ["Y"],
+      RA_RAPID_REPAIR_PSP: ["Y"],
+      RA_RAPID_REPAIR_WARRANTY: ["Y"],
+      RA_RAPID_REPAIR_FEE: ["Y"],
+      PROVINCE: [],
+      IN_STOCK_DATE: [],
+      OUT_OF_STOCK_DATE: [],
+      TAG_TYPE: [],
+      POACHABLE_IND: [],
+      RA_SERV_STKUNIT_UNDRMNF_WRNTY: ["Y"],
+      PRESELL_AMT: [],
+      RA_DEPOT_RTV: ["N"],
+      ADD_STORES: ["Y"],
+      LOC_TRAIT: [],
+      MFG_TECH_SUPPORT_TERM: [0],
+      CARRY_IN_WARRANTY_DAYS: [365],
+      ON_SITE_WARRANTY_DAYS: [0],
+      PARTS_WARRANTY_DAYS: [365],
+      STATIC_BUFFER_VALUE: [0],
+      DYNAMIC_BUFFER_PERCENT: [0],
+      APPROVAL_REQUIRED_SALE: ["N"],
+      APPROVAL_REQUIRED_RETURN: ["N"],
+      SIGNATURE_CAPTURE: ["N"],
+      NO_RECEIPT_RETURN_ALLOWED: ["Y"],
+      REPORTING_DEPT: [],
+      POSA_VENDOR: [],
+      ACTIVATEINPIM: ["Y"],
+      STEP_ID: [],
+      CUST_EMAIL_REQUIRED: [],
+      MFG_WARRANTY_OVERLAP: ["N"],
+      AD_COVERAGE: ["N"],
+      FF_RTV_DAYS: [],
     };
 
-    Object.keys(data).forEach((key) => {
-      const splitKey = key.split("-")[0];
+    // if the array for a key in formData has a default value, ensure the array has selectedNum amount of those default values to match the number of rows
+    Object.keys(formData).forEach((key) => {
+      const currentValue = formData[key];
+      if (Array.isArray(currentValue) && currentValue.length < selectedNum) {
+        const diff = selectedNum - currentValue.length;
+        formData[key] = [...currentValue, ...Array(diff).fill(formData[key][0])];
+      }
+    });
 
-      formData[splitKey].push(data[key]);
+    // matching the data collected from the form to the db attribute
+    Object.keys(data).forEach((key) => {
+      console.log(key, data[key]);
+
+      if (isCapitalized(key)) {
+        const splitKey = key.split("-")[0];
+        formData[splitKey].push(data[key]);
+      }
     });
 
     exportToCSV(formData);
@@ -153,10 +297,8 @@ export default function Row() {
         } else {
           str += val[index] + ",";
         }
-      }, str+="\n"
-    ));
-
-    
+      }, (str += "\n"))
+    );
 
     const csvRows = [headers.join(","), str.trim()];
 
@@ -195,7 +337,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`shortDescription-${index}`}
+              name={`SHORT_DESC-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -209,7 +351,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`longDescription-${index}`}
+              name={`SKU_DESC-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -241,7 +383,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`secondaryUPC-${index}`}
+              name={`UPC1-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -257,7 +399,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`brand-${index}`}
+              name={`BRAND_NAME-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -271,7 +413,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`model-${index}`}
+              name={`MODEL_NO-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -285,7 +427,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`manufacturer-${index}`}
+              name={`MANUFACTURER-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -299,7 +441,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`unitCost-${index}`}
+              name={`UNIT_COST-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -314,7 +456,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`retailPrice-${index}`}
+              name={`ORIGINAL_RETAIL-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -329,7 +471,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`boxedWidth-${index}`}
+              name={`SHIP_CARTON_WID-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -344,7 +486,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`boxedHeight-${index}`}
+              name={`SHIP_CARTON_HGT-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -359,7 +501,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`boxedLength-${index}`}
+              name={`SHIP_CARTON_LEN-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -374,7 +516,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`boxedWeight-${index}`}
+              name={`SHIP_CARTON_WT-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -389,7 +531,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`unboxedWidth-${index}`}
+              name={`S_UNIT_WIDTH-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -404,7 +546,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`unboxedHeight-${index}`}
+              name={`S_UNIT_HEIGHT-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -419,7 +561,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`unboxedLength-${index}`}
+              name={`S_UNIT_LENGTH-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -434,7 +576,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`unboxedWidth-${index}`}
+              name={`S_UNIT_WEIGHT-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -449,7 +591,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`casepack-${index}`}
+              name={`SUPP_PACK_SIZE-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -468,7 +610,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`innerpack-${index}`}
+              name={`INNER_PACK_SIZE-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -484,7 +626,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`additionalUnitCost1-${index}`}
+              name={`SUPP1_UNIT_COST-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -499,7 +641,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`additionalCasepack1-${index}`}
+              name={`SUPP1_PACK_SIZE-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -518,7 +660,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`additionalInnerpack1-${index}`}
+              name={`SUPP1_INNER_PACK_SIZE-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -537,7 +679,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`additionalUnitCost2-${index}`}
+              name={`SUPP2_UNIT_COST-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -552,7 +694,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`additionalCasepack2-${index}`}
+              name={`SUPP2_PACK_SIZE-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -571,7 +713,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`additionalInnerpack2-${index}`}
+              name={`SUPP2_INNER_PACK_SIZE-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -587,7 +729,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`frenchCompliant-${index}`}
+              name={`FRENCH_COMPLIANT-${index}`}
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
@@ -598,8 +740,8 @@ export default function Row() {
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="yes">Yes</SelectItem>
-                    <SelectItem value="no">No</SelectItem>
+                    <SelectItem value="Y">Yes</SelectItem>
+                    <SelectItem value="N">No</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -619,8 +761,8 @@ export default function Row() {
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="yes">Yes</SelectItem>
-                    <SelectItem value="no">No</SelectItem>
+                    <SelectItem value="Y">Yes</SelectItem>
+                    <SelectItem value="N">No</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -629,7 +771,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`energyStar-${index}`}
+              name={`ENERGY_STAR-${index}`}
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
@@ -639,8 +781,8 @@ export default function Row() {
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="yes">Yes</SelectItem>
-                    <SelectItem value="no">No</SelectItem>
+                    <SelectItem value="Y">Yes</SelectItem>
+                    <SelectItem value="N">No</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -660,8 +802,8 @@ export default function Row() {
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="yes">Yes</SelectItem>
-                    <SelectItem value="no">No</SelectItem>
+                    <SelectItem value="Y">Yes</SelectItem>
+                    <SelectItem value="N">No</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -681,8 +823,8 @@ export default function Row() {
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="yes">Yes</SelectItem>
-                    <SelectItem value="no">No</SelectItem>
+                    <SelectItem value="Y">Yes</SelectItem>
+                    <SelectItem value="N">No</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -691,7 +833,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`softwarePlatform-${index}`}
+              name={`SOFTWARE_PLATFORM-${index}`}
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
@@ -714,7 +856,7 @@ export default function Row() {
                     <SelectItem value="dvd">DVD_DVD</SelectItem>
                     <SelectItem value="ios">iOS_iOS</SelectItem>
                     <SelectItem value="linux">Linux_LINUX</SelectItem>
-                    <SelectItem value="mac">MAC_MAC</SelectItem>
+                    <SelectItem value="MAC">MAC_MAC</SelectItem>
                     <SelectItem value="micro-sim">Micro SIM_SIMM</SelectItem>
                     <SelectItem value="mini-sim">Mini SIM_SIMI</SelectItem>
                     <SelectItem value="nano-sim">Nano SIM_SIMN</SelectItem>
@@ -725,7 +867,7 @@ export default function Row() {
                     <SelectItem value="pc">PC Games_PC</SelectItem>
                     <SelectItem value="ps4">Playstation 4_PS4</SelectItem>
                     <SelectItem value="ps5">Playstation 5_PS5</SelectItem>
-                    <SelectItem value="windows">WINDOWS_WIN</SelectItem>
+                    <SelectItem value="WIN">WINDOWS_WIN</SelectItem>
                     <SelectItem value="xbox-one">XBOX One_XBOX1</SelectItem>
                     <SelectItem value="xbox">XBOX_XBOX</SelectItem>
                     <SelectItem value="xbox-x">XBOX Series X_XBOXX</SelectItem>
@@ -772,7 +914,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`productWarrantyDays-${index}`}
+              name={`RA_PRODUCT_WRNTY_DAYS-${index}`}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} defaultValue={"365"}>
                   <SelectTrigger className="w-[180px]">
@@ -836,7 +978,7 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`returnRestrictions-${index}`}
+              name={`RETURN_RESTRICTIONS_FS-${index}`}
               render={({ field }) => (
                 <Input
                   {...field}
@@ -924,8 +1066,8 @@ export default function Row() {
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="yes">Yes</SelectItem>
-                    <SelectItem value="no">No</SelectItem>
+                    <SelectItem value="Y">Yes</SelectItem>
+                    <SelectItem value="N">No</SelectItem>
                   </SelectContent>
                 </Select>
               )}
