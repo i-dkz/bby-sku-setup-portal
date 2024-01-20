@@ -73,23 +73,11 @@ export default function Row() {
   const [maxInnerpack1, setMaxInnerpack1] = useState<number>(0);
   const [maxInnerpack2, setMaxInnerpack2] = useState<number>(0);
 
-  const updateMaxInnerpack1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setMaxInnerpack1(Number(value));
-  };
-  const updateMaxInnerpack2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setMaxInnerpack2(Number(value));
-  };
-
   type FormData = {
     [key: string]: any;
   };
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    // console.log(data); // Handle your form submission logic here
-    // console.log(data["VPN-0"]);
-
     const formData: FormData = {
       UPC: [],
       VPN: [],
@@ -140,8 +128,6 @@ export default function Row() {
       formData[splitKey].push(data[key]);
     });
 
-    console.log(formData);
-
     exportToCSV(formData);
     // Handle any other form submission logic here
   };
@@ -154,7 +140,23 @@ export default function Row() {
   const convertToCSV = (data: FormData) => {
     const headers = Object.keys(data);
     const values = Object.values(data);
-    const csvRows = [headers.join(","), values.join(",")];
+
+    let str: string = "";
+    let rows: any[] = [];
+
+    Array.from({ length: selectedNum }).map((_, index) =>
+      values.forEach((val) => {
+        if (val[index] === undefined) {
+          str += "" + ",";
+        } else {
+          str += val[index] + ",";
+        }
+      }, str+="\n"
+    ));
+
+    console.log(str);
+
+    const csvRows = [headers.join(","), str];
     return csvRows.join("\n");
   };
 
@@ -502,7 +504,7 @@ export default function Row() {
                   required={isAdditionalSupplier1}
                   min={0}
                   onChange={(e) => {
-                    updateMaxInnerpack1(e);
+                    setMaxInnerpack1(Number(e.target.value));
                     field.onChange(e);
                   }}
                 />
@@ -554,7 +556,10 @@ export default function Row() {
                   className="h-8 px-2 font-normal border rounded-md w-36"
                   required={isAdditionalSupplier2}
                   min={0}
-                  onChange={(e) => updateMaxInnerpack2(e)}
+                  onChange={(e) => {
+                    setMaxInnerpack2(Number(e.target.value));
+                    field.onChange(e);
+                  }}
                 />
               )}
             />
