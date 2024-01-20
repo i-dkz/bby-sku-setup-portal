@@ -3,7 +3,6 @@ import {
   SubmitHandler,
   useForm,
   FieldValues,
-  useWatch,
 } from "react-hook-form";
 import { Button } from "./ui/button";
 import { useNumStore } from "@/store/NumStore";
@@ -74,10 +73,6 @@ export default function Row() {
   const [maxInnerpack1, setMaxInnerpack1] = useState<number>(0);
   const [maxInnerpack2, setMaxInnerpack2] = useState<number>(0);
 
-  const updateMaxInnerpack = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setMaxInnerpack(Number(value));
-  };
   const updateMaxInnerpack1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setMaxInnerpack1(Number(value));
@@ -87,51 +82,65 @@ export default function Row() {
     setMaxInnerpack2(Number(value));
   };
 
+  type FormData = {
+    [key: string]: any;
+  };
+
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    console.log(data); // Handle your form submission logic here
-    console.log(data["VPN-0"]);
+    // console.log(data); // Handle your form submission logic here
+    // console.log(data["VPN-0"]);
 
     const formData: FormData = {
-      VPN: data["VPN-0"],
-      shortDescription: data["shortDescription-0"],
-      longDescription: data["longDescription-0"],
-      UPC: data["UPC-0"],
-      secondaryUPC: data["secondaryUPC-0"],
-      brand: data["brand-0"],
-      model: data["model-0"],
-      manufacturer: data["manufacturer-0"],
-      unitCost: data["unitCost-0"],
-      boxedWidth: data["boxedWidth-0"],
-      boxedHeight: data["boxedHeight-0"],
-      boxedLength: data["boxedLength-0"],
-      boxedWeight: data["boxedWeight-0"],
-      unboxedWidth: data["unboxedWidth-0"],
-      unboxedHeight: data["unboxedHeight-0"],
-      unboxedLength: data["unboxedLength-0"],
-      unboxedWeight: data["unboxedWeight-0"],
-      casepack: data["casepack-0"],
-      innerpack: data["innerpack-0"],
-      additionalUnitCost1: data["additionalUnitCost1-0"],
-      additionalCasepack1: data["additionalCasepack1-0"],
-      additionalInnerpack1: data["additionalInnerpack1-0"],
-      additionalUnitCost2: data["additionalUnitCost2-0"],
-      additionalCasepack2: data["additionalCasepack2-0"],
-      additionalInnerpack2: data["additionalInnerpack2-0"],
-      frenchCompliant: data["frenchCompliant-0"],
-      shippableToQuebec: data["shippableToQuebec-0"],
-      energyStar: data["energyStar-0"],
-      refurbished: data["refurbished-0"],
-      consignment: data["consignment-0"],
-      softwarePlatform: data["softwarePlatform-0"],
-      productWarrantyDays: data["productWarrantyDays-0"],
-      productWarrantyCoverage: data["productWarrantyCoverage-0"],
-      extendedPartsWarranty: data["extendedPartsWarranty-0"],
-      returnRestrictions: data["returnRestrictions-0"],
-      expirationDateLotNum: data["expirationDateLotNum-0"],
-      shelfLife: data["shelfLife-0"],
-      dataFlag: data["dataFlag-0"],
-      dangerousProduct: data["dangerousProduct-0"],
+      UPC: [],
+      VPN: [],
+      shortDescription: [],
+      longDescription: [],
+      secondaryUPC: [],
+      brand: [],
+      model: [],
+      manufacturer: [],
+      unitCost: [],
+      retailPrice: [],
+      boxedWidth: [],
+      boxedHeight: [],
+      boxedLength: [],
+      boxedWeight: [],
+      unboxedWidth: [],
+      unboxedHeight: [],
+      unboxedLength: [],
+      unboxedWeight: [],
+      casepack: [],
+      innerpack: [],
+      additionalUnitCost1: [],
+      additionalCasepack1: [],
+      additionalInnerpack1: [],
+      additionalUnitCost2: [],
+      additionalCasepack2: [],
+      additionalInnerpack2: [],
+      frenchCompliant: [],
+      shippableToQuebec: [],
+      energyStar: [],
+      refurbished: [],
+      consignment: [],
+      softwarePlatform: [],
+      productWarrantyDays: [],
+      productWarrantyCoverage: [],
+      extendedPartsWarranty: [],
+      streetDate: [],
+      returnRestrictions: [],
+      expirationDateLotNum: [],
+      shelfLife: [],
+      dataFlag: [],
+      dangerousProduct: [],
     };
+
+    Object.keys(data).forEach((key) => {
+      const splitKey = key.split("-")[0];
+
+      formData[splitKey].push(data[key]);
+    });
+
+    console.log(formData);
 
     exportToCSV(formData);
     // Handle any other form submission logic here
@@ -442,7 +451,10 @@ export default function Row() {
                   className="h-8 px-2 font-normal border rounded-md w-36"
                   required
                   min={0}
-                  onChange={(e) => updateMaxInnerpack(e)}
+                  onChange={(e) => {
+                    setMaxInnerpack(parseInt(e.target.value));
+                    field.onChange(e);
+                  }}
                 />
               )}
             />
