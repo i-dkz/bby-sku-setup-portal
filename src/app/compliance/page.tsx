@@ -28,8 +28,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { PDFDocument, rgb } from 'pdf-lib';
+
 const formSchema = z.object({
-  
   batteryType: z.string().min(1, {
     message: "Battery Type required.",
   }),
@@ -37,7 +38,6 @@ const formSchema = z.object({
   wattHours: z.string(),
   batteryWeight: z.string().min(1),
 });
-
 
 export default function Compliance() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -50,11 +50,16 @@ export default function Compliance() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    
+
     console.log(values.batteryType);
   }
 
- 
+  const extractTextFromPDF = async (pdfBytes: any) => {
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    const textContent = await pdfDoc.getTitle();
+    console.log(textContent);
+    // Do something with the extracted text content
+  };
 
   const handleSub = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,11 +68,17 @@ export default function Compliance() {
     const file = input.files?.[0];
 
     if (file) {
-      console.log("File uploaded:", file);
+      console.log("File uploaded:",typeof file);
       // You can perform further actions with the uploaded file here
     } else {
       console.error("No file selected");
     }
+
+    // extractTextFromPDF(file)
+
+    
+    
+    
   };
 
   return (
@@ -189,21 +200,11 @@ export default function Compliance() {
                               <SelectValue placeholder="" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="3480">
-                                3480
-                              </SelectItem>
-                              <SelectItem value="3481">
-                                3481
-                              </SelectItem>
-                              <SelectItem value="3090">
-                                3090
-                              </SelectItem>
-                              <SelectItem value="3091">
-                                3091
-                              </SelectItem>
-                              <SelectItem value="3171">
-                                3171
-                              </SelectItem>
+                              <SelectItem value="3480">3480</SelectItem>
+                              <SelectItem value="3481">3481</SelectItem>
+                              <SelectItem value="3090">3090</SelectItem>
+                              <SelectItem value="3091">3091</SelectItem>
+                              <SelectItem value="3171">3171</SelectItem>
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -213,7 +214,7 @@ export default function Compliance() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="wattHours"
                     render={({ field }) => (
@@ -227,7 +228,7 @@ export default function Compliance() {
                   />
                 </TableCell>
                 <TableCell>
-                <FormField
+                  <FormField
                     control={form.control}
                     name="batteryWeight"
                     render={({ field }) => (
