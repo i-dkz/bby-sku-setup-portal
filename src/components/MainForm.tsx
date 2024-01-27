@@ -53,10 +53,10 @@ export function ProfileForm() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    if (values.vendor === "Asus") {
+
       setSelectedNum(values.numberOfSKUS);
       router.push("/example");
-    }
+    
 
     
     console.log(values.vendor);
