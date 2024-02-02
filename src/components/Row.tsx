@@ -329,6 +329,7 @@ export default function Row() {
       
       {Array.from({ length: selectedNum }).map((_, index) => (
         <div className="flex flex-col" key={index}>
+          <div className="flex h-[20px] justify-center border-r border-b text-xs font-bold">SKU {index + 1}</div>
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}

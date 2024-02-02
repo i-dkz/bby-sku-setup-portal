@@ -52,7 +52,7 @@ export default function Example() {
     <main>
       <div className="z-10 flex w-[10000px]">
         <div className="sticky left-0 z-40 flex flex-col flex-shrink-0 w-auto overflow-x-auto text-sm font-medium text-primary">
-        
+          <div className="h-[20px] bg-secondary border-b border-primary-foreground"></div>
           {headers.map((item, index) => (
             <div
               className="sticky left-0 flex items-center justify-center w-56 h-20 text-center border-b border-primary-foreground bg-secondary"
