@@ -64,7 +64,7 @@ export function ProfileForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8" noValidate>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-60" noValidate>
         <FormField
           control={form.control}
           name="vendor"
