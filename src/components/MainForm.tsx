@@ -76,7 +76,7 @@ export function ProfileForm() {
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger>
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
@@ -102,7 +102,7 @@ export function ProfileForm() {
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger >
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>

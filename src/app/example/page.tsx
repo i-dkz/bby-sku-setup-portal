@@ -55,7 +55,7 @@ export default function Example() {
         
           {headers.map((item, index) => (
             <div
-              className="flex items-center justify-center w-56 h-20 text-center border-b border-accent-foreground bg-secondary"
+              className="flex items-center justify-center w-56 h-20 text-center border-b border-primary-foreground bg-secondary"
               key={index}
             >
               {item}
