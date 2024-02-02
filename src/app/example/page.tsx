@@ -50,12 +50,12 @@ export default function Example() {
   
   return (
     <main>
-      <div className="z-10 flex">
-        <div className="sticky left-0 z-40 flex flex-col flex-shrink-0 overflow-x-auto text-sm font-medium text-primary">
+      <div className="z-10 flex w-[10000px]">
+        <div className="sticky left-0 z-40 flex flex-col flex-shrink-0 w-auto overflow-x-auto text-sm font-medium text-primary">
         
           {headers.map((item, index) => (
             <div
-              className="flex items-center justify-center w-56 h-20 text-center border-b border-primary-foreground bg-secondary"
+              className="sticky left-0 flex items-center justify-center w-56 h-20 text-center border-b border-primary-foreground bg-secondary"
               key={index}
             >
               {item}

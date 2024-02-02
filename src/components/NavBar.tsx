@@ -3,17 +3,37 @@ import Image from "next/image";
 import { ModeToggle } from "./ModeToggle";
 import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
+import { useNumStore } from "@/store/NumStore";
+import { Dialog } from "./ui/dialog";
 
 const NavBar = () => {
   const path = usePathname();
+  const { selectedNum, setSelectedNum } = useNumStore();
 
   return (
     <div className="fixed z-50 flex items-center w-full h-16 justify-evenly bg-secondary">
-      <div className="w-[5%]"></div>
+      <div className="w-[5%] flex">
+        {path === "/example" && (
+          <Button
+            className="m-4"
+            onClick={() =>
+              selectedNum < 50 ? (
+                setSelectedNum(selectedNum + 1)
+              ) : (
+                null
+              )
+            }
+          >
+            +
+          </Button>
+        )}
+      </div>
       <div className="flex items-center justify-evenly w-[90%]">
         <Image src="/bby-logo.png" alt="logo" width={50} height={50} />
 
-        <div className="flex items-center justify-center w-auto">BestBuy SKU Setup Portal</div>
+        <div className="flex items-center justify-center w-auto">
+          BestBuy SKU Setup Portal
+        </div>
 
         <ModeToggle />
       </div>
