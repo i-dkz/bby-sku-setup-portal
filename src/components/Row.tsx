@@ -325,9 +325,10 @@ export default function Row() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} name="myForm">
+    <form onSubmit={handleSubmit(onSubmit)} name="myForm" id="myForm" className="flex">
+      
       {Array.from({ length: selectedNum }).map((_, index) => (
-        <div className="flex w-[10000px]" key={index}>
+        <div className="flex flex-col" key={index}>
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
@@ -335,7 +336,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   maxLength={20}
                 />
@@ -349,7 +350,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   maxLength={20}
                 />
@@ -363,7 +364,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   maxLength={40}
                 />
@@ -378,7 +379,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="w-32 h-8 px-2 font-normal border rounded-md"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   minLength={12}
                   maxLength={13}
@@ -395,7 +396,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="w-32 h-8 px-2 font-normal border rounded-md"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   minLength={12}
                   maxLength={13}
                   pattern="\d+" // Use the \d+ regex pattern to allow only digits
@@ -411,7 +412,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   maxLength={20}
                 />
@@ -425,7 +426,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   maxLength={20}
                 />
@@ -439,7 +440,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   maxLength={20}
                 />
@@ -454,7 +455,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -469,7 +470,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -484,7 +485,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -499,7 +500,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -514,7 +515,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -529,7 +530,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -544,7 +545,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -559,7 +560,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -574,7 +575,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -589,7 +590,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                 />
@@ -604,7 +605,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                   onChange={(e) => {
@@ -623,7 +624,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required
                   min={0}
                   max={maxInnerpack}
@@ -639,7 +640,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   min={0}
                   onChange={(e) => setIsAdditionalSupplier1(!!e.target.value)}
                 />
@@ -654,7 +655,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required={isAdditionalSupplier1}
                   min={0}
                   onChange={(e) => {
@@ -673,7 +674,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required={isAdditionalSupplier1}
                   min={0}
                   onChange={(e) => {
@@ -692,7 +693,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   min={0}
                   onChange={(e) => setIsAdditionalSupplier2(!!e.target.value)}
                 />
@@ -707,7 +708,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required={isAdditionalSupplier2}
                   min={0}
                   onChange={(e) => {
@@ -726,7 +727,7 @@ export default function Row() {
                 <Input
                   {...field}
                   type="number"
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   required={isAdditionalSupplier2}
                   min={0}
                   max={maxInnerpack2}
@@ -734,7 +735,7 @@ export default function Row() {
               )}
             />
           </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r" >
             <Controller
               control={control}
               name={`FRENCH_COMPLIANT-${index}`}
@@ -744,7 +745,7 @@ export default function Row() {
                   defaultValue={field.value}
                   required
                 >
-                  <SelectTrigger className="w-[180px]">
+                  <SelectTrigger className="w-[180px] z-1">
                     <SelectValue placeholder="" />
                   </SelectTrigger>
                   <SelectContent>
@@ -976,7 +977,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   min={0}
                   maxLength={256}
                 />
@@ -990,7 +991,7 @@ export default function Row() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  className="h-8 px-2 font-normal border rounded-md w-36"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
                   min={0}
                   maxLength={256}
                 />
@@ -1083,7 +1084,7 @@ export default function Row() {
           </div>
         </div>
       ))}
-      <Button type="submit" className="m-4">Next</Button>
+      
     </form>
   );
 }

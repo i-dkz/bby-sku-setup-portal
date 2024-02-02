@@ -240,10 +240,10 @@ export default function Smart() {
   return (
     <main>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col space-y-8">
           <Table className="flex flex-col">
             <TableHeader>
-              <TableRow>
+              <TableRow >
                 <TableHead>Vendor Part Number</TableHead>
                 <TableHead>Description (Short)</TableHead>
                 <TableHead>Description (Long)</TableHead>
