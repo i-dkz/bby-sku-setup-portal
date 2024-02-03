@@ -18,7 +18,26 @@ import {
 
 import { cn } from "@/lib/utils";
 
-
+const formats = {
+  "Lithium Ion": [
+    "AA",
+    "AAA",
+    "C",
+    "D",
+    "9V",
+    "Lantern",
+    "CR-V3",
+    "CR-P2 (CR-P2/5024LC)",
+    "2CR5 (2CR5/5032LC)",
+    "CR2 (CR17355/5046LC)",
+    "CR123A",
+    "CR123A (CR17345/5018LC)",
+    "RCR123A",
+    "RCR123",
+    "RCR-V3",
+    "OTHER",
+  ],
+};
 // this is the row component, rows are dynamically rendered based on selectedNum and all the rows make up a form
 export default function Row() {
   const { selectedNum } = useNumStore();
@@ -145,14 +164,44 @@ export default function Row() {
           <div className="flex items-center justify-center w-56 h-20 border-b border-r">
             <Controller
               control={control}
-              name={`SHORT_DESC-${index}`}
+              name={`size_format-${index}`}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(formats).map(([type, sizes]) => (
+                      <div key={type}>
+
+                          {sizes.map((size, index) => (
+                            <SelectItem key={index} value={size}>{size}</SelectItem>
+                          ))}
+
+                      </div>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`quantity-${index}`}
               render={({ field }) => (
                 <Input
-                  {...field}
-                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
-                  required
-                  maxLength={20}
-                />
+                {...field}
+                className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                required
+                minLength={12}
+                maxLength={13}
+                pattern="\d+" // Use the \d+ regex pattern to allow only digits
+                title="Please enter only digits"
+              />
               )}
             />
           </div>

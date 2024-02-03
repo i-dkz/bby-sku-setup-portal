@@ -23,12 +23,7 @@ const NavBar = () => {
             +
           </Button>
         )}
-        {path === "/compliance" && (
-          <div className="flex items-center justify-center">
-          <input type="file" id="fileInput" accept=".pdf" className="mx-1"></input>
-          <Button>Upload</Button>
-          </div>
-        )}
+
       </div>
       <div className="flex items-center justify-evenly w-[80%]">
         <Image src="/bby-logo.png" alt="logo" width={50} height={50} />
