@@ -176,11 +176,11 @@ export default function Row() {
                   <SelectContent>
                     {Object.entries(formats).map(([type, sizes]) => (
                       <div key={type}>
-
-                          {sizes.map((size, index) => (
-                            <SelectItem key={index} value={size}>{size}</SelectItem>
-                          ))}
-
+                        {sizes.map((size, index) => (
+                          <SelectItem key={index} value={size}>
+                            {size}
+                          </SelectItem>
+                        ))}
                       </div>
                     ))}
                   </SelectContent>
@@ -194,14 +194,154 @@ export default function Row() {
               name={`quantity-${index}`}
               render={({ field }) => (
                 <Input
-                {...field}
-                className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
-                required
-                minLength={12}
-                maxLength={13}
-                pattern="\d+" // Use the \d+ regex pattern to allow only digits
-                title="Please enter only digits"
-              />
+                  {...field}
+                  type="number"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                  required
+                  min={0}
+                />
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`hazmat_id-${index}`}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(formats).map(([type, sizes]) => (
+                      <div key={type}>
+                        {sizes.map((size, index) => (
+                          <SelectItem key={index} value={size}>
+                            {size}
+                          </SelectItem>
+                        ))}
+                      </div>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`batteries_in-${index}`}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="number"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                  required
+                  min={0}
+                />
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`batteries_out-${index}`}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  type="number"
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                  required
+                  min={0}
+                />
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`cells-${index}`}
+              render={({ field }) => (
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Multi">Multiple</SelectItem>
+                    <SelectItem value="Single">Single</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`lithium_content-${index}`}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                  required
+                  minLength={12}
+                  maxLength={13}
+                  pattern="\d+" // Use the \d+ regex pattern to allow only digits
+                  title="Please enter only digits"
+                />
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`watt_hours-${index}`}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                  required
+                  minLength={12}
+                  maxLength={13}
+                  pattern="\d+" // Use the \d+ regex pattern to allow only digits
+                  title="Please enter only digits"
+                />
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`battery_weight-${index}`}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                  required
+                  minLength={12}
+                  maxLength={13}
+                  pattern="\d+" // Use the \d+ regex pattern to allow only digits
+                  title="Please enter only digits"
+                />
+              )}
+            />
+          </div>
+          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+            <Controller
+              control={control}
+              name={`msds-${index}`}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  className="h-[35px] px-2 font-normal text-xs border rounded-md w-[180px] "
+                  required
+                  type="file"
+                />
               )}
             />
           </div>

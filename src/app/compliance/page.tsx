@@ -263,7 +263,8 @@ const headers = {
   "Cells in Lithium (single or multiple)": "Select from list of values",
   "# Lithium Content (Primary) (grams)": "Required for lithium metal batteries",
   "Watt Hours": "Required for lithium ion batteries",
-  "Individual Li Battery Net Weight (kg)": "Enter a number"
+  "Individual Li Battery Net Weight (kg)": "Enter a number",
+  "MSDS": "Upload MSDS file here",
 };
 
 export default function Compliance() {
