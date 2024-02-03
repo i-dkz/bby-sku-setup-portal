@@ -243,6 +243,7 @@
 // }
 
 "use client";
+import ComplianceCol from "@/components/ComplianceCol";
 import Row from "@/components/Row";
 import { Button } from "@/components/ui/button";
 import {
@@ -292,7 +293,7 @@ export default function Compliance() {
             </div>
           ))}
         </div>
-        <Row></Row>
+        <ComplianceCol />
       </div>
     </main>
   );

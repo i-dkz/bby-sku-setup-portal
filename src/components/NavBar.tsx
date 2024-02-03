@@ -11,24 +11,26 @@ const NavBar = () => {
   const { selectedNum, setSelectedNum } = useNumStore();
 
   return (
-    <div className="fixed z-50 flex items-center w-full h-16 justify-evenly bg-secondary">
-      <div className="w-[5%] flex">
+    <div className="fixed z-50 flex items-center w-full h-16 overflow-auto justify-evenly bg-secondary">
+      <div className="w-[15%] flex">
         {path === "/example" && (
           <Button
             className="m-4"
             onClick={() =>
-              selectedNum < 50 ? (
-                setSelectedNum(selectedNum + 1)
-              ) : (
-                null
-              )
+              selectedNum < 50 ? setSelectedNum(selectedNum + 1) : null
             }
           >
             +
           </Button>
         )}
+        {path === "/compliance" && (
+          <div className="flex items-center justify-center">
+          <input type="file" id="fileInput" accept=".pdf" className="mx-1"></input>
+          <Button>Upload</Button>
+          </div>
+        )}
       </div>
-      <div className="flex items-center justify-evenly w-[90%]">
+      <div className="flex items-center justify-evenly w-[80%]">
         <Image src="/bby-logo.png" alt="logo" width={50} height={50} />
 
         <div className="flex items-center justify-center w-auto">
@@ -37,7 +39,7 @@ const NavBar = () => {
 
         <ModeToggle />
       </div>
-      <div className="w-[5%]">
+      <div className="w-[20%]">
         {path === "/example" && (
           <Button type="submit" className="m-4" form="myForm">
             Next

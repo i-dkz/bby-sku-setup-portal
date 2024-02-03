@@ -20,6 +20,8 @@ import { Calendar } from "./ui/calendar";
 import { CalendarIcon } from "lucide-react";
 import { format, isValid } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+
 
 // this function checks if a string is capitalized, used to differentiate between CO4P db values and other values
 function isCapitalized(str: string) {
@@ -30,6 +32,7 @@ function isCapitalized(str: string) {
 export default function Row() {
   const { selectedNum } = useNumStore();
   const { handleSubmit, control } = useForm();
+  const router = useRouter();
 
   const [isAdditionalSupplier1, setIsAdditionalSupplier1] = useState(false);
   const [isAdditionalSupplier2, setIsAdditionalSupplier2] = useState(false);
@@ -283,6 +286,7 @@ export default function Row() {
 
     exportToCSV(formData);
     // Handle any other form submission logic here
+    router.push("./compliance")
   };
 
   // function takes the form data passes to convertToCSV function to get csv format, then passes to downloadCSV function
