@@ -8,10 +8,10 @@
       integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
       crossorigin="anonymous"
     ></script>
-    <link href="./src/output.css" rel="stylesheet" />
+    <link href="./output.css" rel="stylesheet" />
     <script src="./js/compliance.js" defer></script>
     <script
-      src="./node_modules/pdfjs-dist/build/pdf.mjs"
+      src="../../node_modules/pdfjs-dist/build/pdf.mjs"
       type="module"
     ></script>
     <title>Best Buy SKU Setup Portal</title>
@@ -54,7 +54,7 @@
     </header>
     <script id="script" type="module">
       pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "./node_modules/pdfjs-dist/build/pdf.worker.mjs";
+        "../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
 
       async function extractText() {
         const fileInput = document.getElementById("fileInput");
