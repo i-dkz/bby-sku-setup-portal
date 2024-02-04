@@ -1,3 +1,4 @@
+import pdfjsLib from 'pdfjs-dist';
 
 
 const headers = {
@@ -198,3 +199,60 @@ battType.addEventListener("change", function () {
       });
     }
   });
+
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
+
+async function extractText() {
+  const fileInput = document.getElementById("fileInput");
+  const file = fileInput.files[0];
+
+  if (!file) {
+    console.error("No file selected.");
+    return;
+  }
+
+  const pdfData = await file.arrayBuffer();
+  const loadingTask = pdfjsLib.getDocument(pdfData);
+
+  loadingTask.promise.then(async function (pdf) {
+    const page = await pdf.getPage(5);
+
+    // Extract text from the PDF
+    const textContent = await page.getTextContent();
+    // const textItems = textContent.items.map((item) => item.str);
+    // const extractedText = textItems.join(" ");
+
+    // // Log the extracted text to the console
+    // console.log("Extracted Text:", extractedText);
+    let extractedNumber = 0;
+    textContent.items.forEach((item) => {
+      if (
+        item.str.toLowerCase().includes("watt") ||
+        item.str.includes("wh") ||
+        item.str.includes("rating")
+      ) {
+        const numbers = item.str.match(/\d+/g);
+        if (numbers) {
+          extractedNumber = parseInt(numbers[0]);
+          console.log(extractedNumber); // Output: 123
+        } else {
+          console.log("No numbers found in the string");
+        }
+      }
+    });
+
+    const inputElement = document.getElementById("wattHours");
+
+    // Check if the input element exists
+    if (inputElement) {
+      // Set the value of the input element
+      inputElement.value = extractedNumber;
+    } else {
+      console.error("Input element not found.");
+    }
+  });
+}
+
+// Define the function in the global scope
+window.extractText = extractText;
