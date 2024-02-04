@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://unpkg.com/htmx.org@1.9.10"
+      integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+      crossorigin="anonymous"
+    ></script>
+    <link href="./output.css" rel="stylesheet" />
+    <script src="./js/compliance.js" defer></script>
+    <script
+      src="../../node_modules/pdfjs-dist/build/pdf.mjs"
+      type="module"
+    ></script>
+    <title>Best Buy SKU Setup Portal</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  </head>
+  <body class="flex flex-col items-center w-[100vw] min-h-screen">
+    <header
+      class="flex w-full h-[70px] items-center justify-center bg-secondary fixed z-50"
+    >
+      <div></div>
+      <div class="flex w-[80%] justify-evenly items-center">
+        <img src="../public/bby-logo.png" class="w-[50px]" />
+        Best Buy SKU Setup Portal
+        <button id="toggle">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-sun"
+          >
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+        </button>
+      </div>
+      <div></div>
+    </header>
+    <script id="script" type="module">
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
+
+      async function extractText() {
+        const fileInput = document.getElementById("fileInput");
+        const file = fileInput.files[0];
+
+        if (!file) {
+          console.error("No file selected.");
+          return;
+        }
+
+        const pdfData = await file.arrayBuffer();
+        const loadingTask = pdfjsLib.getDocument(pdfData);
+
+        loadingTask.promise.then(async function (pdf) {
+          const page = await pdf.getPage(5);
+
+          // Extract text from the PDF
+          const textContent = await page.getTextContent();
+          // const textItems = textContent.items.map((item) => item.str);
+          // const extractedText = textItems.join(" ");
+
+          // // Log the extracted text to the console
+          // console.log("Extracted Text:", extractedText);
+          let extractedNumber = 0;
+          textContent.items.forEach((item) => {
+            if (
+              item.str.toLowerCase().includes("watt") ||
+              item.str.includes("wh") ||
+              item.str.includes("rating")
+            ) {
+              const numbers = item.str.match(/\d+/g);
+              if (numbers) {
+                extractedNumber = parseInt(numbers[0]);
+                console.log(extractedNumber); // Output: 123
+              } else {
+                console.log("No numbers found in the string");
+              }
+            }
+          });
+
+          const inputElement = document.getElementById("wattHours");
+
+          // Check if the input element exists
+          if (inputElement) {
+            // Set the value of the input element
+            inputElement.value = extractedNumber;
+          } else {
+            console.error("Input element not found.");
+          }
+        });
+      }
+
+      // Define the function in the global scope
+      window.extractText = extractText;
+    </script>
+    <main class="flex w-full pt-[70px] z-10 flex-grow">
+      <div
+        id="headers"
+        class="sticky left-0 z-40 flex flex-col flex-shrink-0 w-auto overflow-x-auto text-sm font-medium text-primary"
+      ></div>
+    </main>
+  </body>
+</html>
