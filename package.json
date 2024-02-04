@@ -1,7 +1,6 @@
 {
-
+  "type": "module",
   "devDependencies": {
-    "type": "module",
     "tailwindcss": "^3.4.1"
   },
   "dependencies": {
@@ -12,3 +11,4 @@
     "watch-css": "tailwindcss build -i public/input.css -o public/output.css --watch"
   }
 }
+
