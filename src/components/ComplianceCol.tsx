@@ -14,35 +14,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { pdfjs } from 'react-pdf';
+import { pdfjs } from "react-pdf";
+import { useState } from "react";
+import { batteryTypes, formats, unCodes } from "@/data/complianceData";
 
-const formats = {
-  "Lithium Ion": [
-    "AA",
-    "AAA",
-    "C",
-    "D",
-    "9V",
-    "Lantern",
-    "CR-V3",
-    "CR-P2 (CR-P2/5024LC)",
-    "2CR5 (2CR5/5032LC)",
-    "CR2 (CR17355/5046LC)",
-    "CR123A",
-    "CR123A (CR17345/5018LC)",
-    "RCR123A",
-    "RCR123",
-    "RCR-V3",
-    "OTHER",
-  ],
-};
-
-// this is the row component, rows are dynamically rendered based on selectedNum and all the rows make up a form
+// this is the column component, columns are dynamically rendered based on selectedNum and all the columns make up a form
 export default function ComplianceCol() {
   pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
   const { selectedNum } = useNumStore();
   const { handleSubmit, control } = useForm();
+  const [wattHours, setWattHours] = useState("");
+  const [batteryType, setBatteryType] = useState("");
 
   type FormData = {
     [key: string]: any;
@@ -67,14 +50,13 @@ export default function ComplianceCol() {
     });
   };
 
+  // this function handles when the user uploads an MSDS file
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-
     let file;
     if (e.target.files) {
-       file = e.target.files[0];
+      file = e.target.files[0];
     }
 
-    console.log(e.target.files)
     if (!file) {
       console.error("No file selected.");
       return;
@@ -83,294 +65,287 @@ export default function ComplianceCol() {
     const pdfData = await file.arrayBuffer();
     const loadingTask = pdfjs.getDocument(pdfData);
 
+    let extractedWH: number;
+
+    // This is the function that parses the pdf file and looks for the watt hour rating
     loadingTask.promise.then(async function (pdf) {
-      const page = await pdf.getPage(5);
+      const numPages = pdf.numPages;
 
-      // Extract text from the PDF
-      const textContent = await page.getTextContent();
-      console.log(textContent)
-      // const textItems = textContent.items.map((item) => item.str);
-      // const extractedText = textItems.join(" ");
+      // Loop through all pages
+      for (let pageNumber = 1; pageNumber <= numPages; pageNumber++) {
+        const page = await pdf.getPage(pageNumber);
 
-      // // Log the extracted text to the console
-      // console.log("Extracted Text:", extractedText);
-      let extractedNumber = 0;
-      })
+        // Extract text from the PDF
+        const textContent = await page.getTextContent();
+
+        // Process text content as needed for each page
+        for (const item of textContent.items) {
+          if ("str" in item) {
+            if (
+              item.str.toLowerCase().includes("watt") ||
+              item.str.toLowerCase().includes("wh") ||
+              item.str.toLowerCase().includes("rating")
+            ) {
+              const numbers = item.str.match(/\d+/g);
+              if (numbers) {
+                extractedWH = parseInt(numbers[0]);
+
+                console.log(
+                  `Page ${pageNumber}, Extracted Number: ${extractedWH}`
+                );
+
+                // Break out of the loop once the first "wh" is found
+                break;
+              } else {
+                console.log(
+                  `Page ${pageNumber}, No numbers found in the string`
+                );
+              }
+            }
+          }
+        }
+
+        // Check if "wh" is found to break out of the outer loop
+        if (extractedWH) {
+          console.log(wattHours, extractedWH);
+
+          setWattHours(extractedWH.toString());
+          break;
+        }
+      }
+    });
   };
 
   return (
     <>
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      name="complianceForm"
-      id="complianceForm"
-      className="flex"
-    >
-      {Array.from({ length: selectedNum }).map((_, index) => (
-        <div className="flex flex-col" key={index}>
-          <div className="flex h-[20px] justify-center border-r border-b text-xs font-bold">
-            SKU {index + 1}
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`BATTERY_TYPE-${index}`}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="alkaline-battery">
-                      Alkaline Battery
-                    </SelectItem>
-                    <SelectItem value="alkaline-coin-button">
-                      Alkaline Coin/Button
-                    </SelectItem>
-                    <SelectItem value="lead-acid">Lead-Acid</SelectItem>
-                    <SelectItem value="lithium-carbon">
-                      Lithium Carbon Flouride (Li-CFx)
-                    </SelectItem>
-                    <SelectItem value="lithium-coin">
-                      Lithium Coin/Button
-                    </SelectItem>
-                    <SelectItem value="lithium-iron-disulfide">
-                      Lithium Iron Disulfide (LiFe2)
-                    </SelectItem>
-                    <SelectItem value="lithium-iron-phosphate">
-                      Lithium iron phosphate (LiFePO4)
-                    </SelectItem>
-                    <SelectItem value="lithium-cobalt">
-                      Lithium-cobalt (LiCoO2)
-                    </SelectItem>
-                    <SelectItem value="lithium-ion">
-                      Lithium-Ion Battery
-                    </SelectItem>
-                    <SelectItem value="lithium-manganese">
-                      Lithium-manganese(LiMn204)
-                    </SelectItem>
-                    <SelectItem value="lithium-manganese-dioxide">
-                      Lithium-manganese(LiMn204)
-                    </SelectItem>
-                    <SelectItem value="lithium-polymer">
-                      Lithium-Polymer
-                    </SelectItem>
-                    <SelectItem value="manganese-titanium-lithium">
-                      Manganese Titanium Lithium
-                    </SelectItem>
-                    <SelectItem value="nickel-cadmium">
-                      Nickel-Cadmium (NiCd)
-                    </SelectItem>
-                    <SelectItem value="nickel-metal-hydride">
-                      Nickel-Metal Hydride (NiMH)
-                    </SelectItem>
-                    <SelectItem value="silver-oxide-coin">
-                      Silver Oxide Coin/Button
-                    </SelectItem>
-                    <SelectItem value="zinc-air-coin">
-                      Zinc Air Coin/Button
-                    </SelectItem>
-                    <SelectItem value="zinc-carbon">Zinc Carbon</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`size_format-${index}`}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(formats).map(([type, sizes]) => (
-                      <div key={type}>
-                        {sizes.map((size, index) => (
-                          <SelectItem key={index} value={size}>
-                            {size}
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        name="complianceForm"
+        id="complianceForm"
+        className="flex"
+      >
+        {Array.from({ length: selectedNum }).map((_, index) => (
+          <div className="flex flex-col" key={index}>
+            <div className="flex h-[20px] justify-center border-r border-b text-xs font-bold">
+              SKU {index + 1}
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`BATTERY_TYPE-${index}`}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={(e)=> {
+                      setBatteryType(e);
+                      field.onChange;
+                    }}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {batteryTypes.map((batt, index) => (
+                        <SelectItem value={batt} key={index}>
+                          {batt}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`size_format-${index}`}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={() => {
+                      setBatteryType("lithium-ion");
+                      field.onChange;
+                    }}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(formats).map(([type, sizes]) => (
+                        <div key={type}>
+                          {sizes.map((size, index) => (
+                            <SelectItem key={index} value={size}>
+                              {size}
+                            </SelectItem>
+                          ))}
+                        </div>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`quantity-${index}`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                    required
+                    min={0}
+                  />
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`hazmat_id-${index}`}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {batteryType &&
+                        unCodes["lithium-ion"].map((code, index) => (
+                          <SelectItem key={index} value={code}>
+                            {code}
                           </SelectItem>
                         ))}
-                      </div>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`batteries_in-${index}`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                    required
+                    min={0}
+                  />
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`batteries_out-${index}`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    type="number"
+                    className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                    required
+                    min={0}
+                  />
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`cells-${index}`}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Multi">Multiple</SelectItem>
+                      <SelectItem value="Single">Single</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`lithium_content-${index}`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                    required
+                    minLength={12}
+                    maxLength={13}
+                    pattern="\d+" // Use the \d+ regex pattern to allow only digits
+                    title="Please enter only digits"
+                    disabled={batteryType === 'lithium-ion'}
+                  />
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`watt_hours-${index}`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                    required
+                    pattern="\d+" // Use the \d+ regex pattern to allow only digits
+                    title="Please enter only digits"
+                    value={wattHours}
+                    onChange={(e) => setWattHours(e.target.value)}
+                  />
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`battery_weight-${index}`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
+                    required
+                    minLength={12}
+                    maxLength={13}
+                    pattern="\d+" // Use the \d+ regex pattern to allow only digits
+                    title="Please enter only digits"
+                  />
+                )}
+              />
+            </div>
+            <div className="flex items-center justify-center w-56 h-20 border-b border-r">
+              <Controller
+                control={control}
+                name={`msds-${index}`}
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className="h-[35px] px-2 font-normal text-xs border rounded-md w-[180px] "
+                    required
+                    type="file"
+                    id="fileInput"
+                    accept=".pdf"
+                    onChange={(e) => handleChange(e)}
+                  />
+                )}
+              />
+            </div>
           </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`quantity-${index}`}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type="number"
-                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
-                  required
-                  min={0}
-                />
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`hazmat_id-${index}`}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(formats).map(([type, sizes]) => (
-                      <div key={type}>
-                        {sizes.map((size, index) => (
-                          <SelectItem key={index} value={size}>
-                            {size}
-                          </SelectItem>
-                        ))}
-                      </div>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`batteries_in-${index}`}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type="number"
-                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
-                  required
-                  min={0}
-                />
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`batteries_out-${index}`}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  type="number"
-                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
-                  required
-                  min={0}
-                />
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`cells-${index}`}
-              render={({ field }) => (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Multi">Multiple</SelectItem>
-                    <SelectItem value="Single">Single</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`lithium_content-${index}`}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
-                  required
-                  minLength={12}
-                  maxLength={13}
-                  pattern="\d+" // Use the \d+ regex pattern to allow only digits
-                  title="Please enter only digits"
-                />
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`watt_hours-${index}`}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
-                  required
-                  minLength={12}
-                  maxLength={13}
-                  pattern="\d+" // Use the \d+ regex pattern to allow only digits
-                  title="Please enter only digits"
-                />
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`battery_weight-${index}`}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  className="h-[35px] px-2 font-normal border rounded-md w-[180px]"
-                  required
-                  minLength={12}
-                  maxLength={13}
-                  pattern="\d+" // Use the \d+ regex pattern to allow only digits
-                  title="Please enter only digits"
-                />
-              )}
-            />
-          </div>
-          <div className="flex items-center justify-center w-56 h-20 border-b border-r">
-            <Controller
-              control={control}
-              name={`msds-${index}`}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  className="h-[35px] px-2 font-normal text-xs border rounded-md w-[180px] "
-                  required
-                  type="file"
-                  id="fileInput"
-                  accept=".pdf"
-                  onChange={(e) => handleChange(e)}
-                />
-              )}
-            />
-          </div>
-        </div>
-      ))}
-    </form>
+        ))}
+      </form>
     </>
-
   );
 }
