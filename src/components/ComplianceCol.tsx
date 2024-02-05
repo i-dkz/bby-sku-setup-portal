@@ -1,4 +1,3 @@
-"use client"
 import {
   Controller,
   SubmitHandler,
@@ -8,7 +7,6 @@ import {
 import { Button } from "./ui/button";
 import { useNumStore } from "@/store/NumStore";
 import { Input } from "./ui/input";
-import { useState } from "react";
 import {
   Select,
   SelectContent,
@@ -41,14 +39,10 @@ const formats = {
 
 // this is the row component, rows are dynamically rendered based on selectedNum and all the rows make up a form
 export default function ComplianceCol() {
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-  ).toString();
+  pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
   const { selectedNum } = useNumStore();
   const { handleSubmit, control } = useForm();
-  const [fileInputValue, setFileInputValue] = useState("");
 
   type FormData = {
     [key: string]: any;
@@ -106,8 +100,6 @@ export default function ComplianceCol() {
 
   return (
     <>
-
-    
     <form
       onSubmit={handleSubmit(onSubmit)}
       name="complianceForm"
@@ -371,7 +363,6 @@ export default function ComplianceCol() {
                   id="fileInput"
                   accept=".pdf"
                   onChange={(e) => handleChange(e)}
-
                 />
               )}
             />
