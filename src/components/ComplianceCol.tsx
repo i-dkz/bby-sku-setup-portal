@@ -1,3 +1,4 @@
+"use client"
 import {
   Controller,
   SubmitHandler,
@@ -15,13 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import * as pdfjsLib from "pdfjs-dist";
-// import 'pdfjs-dist/build/pdf.worker.entry';
-
-
-
-
-import { cn } from "@/lib/utils";
+import { pdfjs } from 'react-pdf';
 
 const formats = {
   "Lithium Ion": [
@@ -43,8 +38,14 @@ const formats = {
     "OTHER",
   ],
 };
+
 // this is the row component, rows are dynamically rendered based on selectedNum and all the rows make up a form
 export default function ComplianceCol() {
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url,
+  ).toString();
+
   const { selectedNum } = useNumStore();
   const { handleSubmit, control } = useForm();
   const [fileInputValue, setFileInputValue] = useState("");
@@ -73,69 +74,40 @@ export default function ComplianceCol() {
   };
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // pdfjsLib.GlobalWorkerOptions.workerSrc =
-    // '../../node_modules/pdfjs-dist/build/pdf.worker.mjs';
 
-    const fileInput = e.target;
+    let file;
+    if (e.target.files) {
+       file = e.target.files[0];
+    }
 
-    if (!fileInput.files || fileInput.files.length === 0) {
+    console.log(e.target.files)
+    if (!file) {
       console.error("No file selected.");
       return;
     }
-  
-    const file = fileInput.files[0];
-  
-    if (file) {
-        setFileInputValue(file.name); // or any other property you want to display
-    
-        // Use FileReader to read the contents of the file as ArrayBuffer
-        const reader = new FileReader();
-    
-        reader.onload = (event) => {
-          if (event.target && event.target.result) {
-            const pdfData = event.target.result as ArrayBuffer;
-    
-            // Log the ArrayBuffer contents
-            console.log(new Uint8Array(pdfData));
-    
-            // If you want to convert it to a string and display it
-            const text = new TextDecoder().decode(new Uint8Array(pdfData));
-            console.log(text);
-          }
-        };
-    
-        // Read the file as ArrayBuffer
-        reader.readAsArrayBuffer(file);
-      
 
-    // try {
-    //   const pdfData = await file.arrayBuffer();
-    //   const loadingTask = pdfjsLib.getDocument(pdfData);
+    const pdfData = await file.arrayBuffer();
+    const loadingTask = pdfjs.getDocument(pdfData);
 
-    //   loadingTask.promise.then(async function (pdf) {
-    //     const page = await pdf.getPage(1);
+    loadingTask.promise.then(async function (pdf) {
+      const page = await pdf.getPage(5);
 
-    //     // Extract text from the PDF
-    //     const textContent = await page.getTextContent();
-    //     const textItems = textContent.items.map((item) => {
-    //         if ('str' in item) {
-    //           return item.str;
-    //         } else if ('textContent' in item) {
-    //           return item.textContent;
-    //         }
-    //         return '';
-    //       });
-    //     const extractedText = textItems.join(' ');
+      // Extract text from the PDF
+      const textContent = await page.getTextContent();
+      console.log(textContent)
+      // const textItems = textContent.items.map((item) => item.str);
+      // const extractedText = textItems.join(" ");
 
-    //     // Log the extracted text to the console
-    //     console.log('Extracted Text:', extractedText);
-    //   });
-    // } catch (error) {
-    //   console.error('Error loading PDF:', error);
-    }
+      // // Log the extracted text to the console
+      // console.log("Extracted Text:", extractedText);
+      let extractedNumber = 0;
+      })
   };
 
   return (
+    <>
+
+    
     <form
       onSubmit={handleSubmit(onSubmit)}
       name="complianceForm"
@@ -407,5 +379,7 @@ export default function ComplianceCol() {
         </div>
       ))}
     </form>
+    </>
+
   );
 }
