@@ -8,6 +8,6 @@ type NumState = {
 
 // Create a store with the defined state type
 export const useNumStore = create<NumState>((set) => ({
-  selectedNum: 0,
+  selectedNum: 2,
   setSelectedNum: (num) => set({ selectedNum: num}),
 }));

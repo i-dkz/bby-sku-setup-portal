@@ -17,6 +17,7 @@ import {
 import { pdfjs } from "react-pdf";
 import { useState } from "react";
 import { batteryTypes, formats, unCodes } from "@/data/complianceData";
+import apiCall from "../API.mjs";
 
 // this is the column component, columns are dynamically rendered based on selectedNum and all the columns make up a form
 export default function ComplianceCol() {
@@ -24,8 +25,52 @@ export default function ComplianceCol() {
 
   const { selectedNum } = useNumStore();
   const { handleSubmit, control } = useForm();
-  const [wattHours, setWattHours] = useState("");
   const [batteryType, setBatteryType] = useState("");
+  const [wattHoursArray, setWattHoursArray] = useState<string[]>(
+    Array(selectedNum).fill("")
+  );
+  const [lithiumContentArray, setLithiumContentArray] = useState<string[]>(
+    Array(selectedNum).fill("")
+  );
+  const [battTypeArray, setBattTypeArray] = useState<string[]>(
+    Array(selectedNum).fill("")
+  );
+  const [weightArray, setWeightArray] = useState<string[]>(
+    Array(selectedNum).fill("")
+  );
+
+  // Function handles setting the watt hour state for only the column that is being updated
+  const handleWattHours = (value: string, index: number) => {
+    setWattHoursArray((prevArray) => {
+      const newArray = [...prevArray];
+      newArray[index] = value;
+      return newArray;
+    });
+  };
+
+  const handleLithiumContent = (value: string, index: number) => {
+    setLithiumContentArray((prevArray) => {
+      const newArray = [...prevArray];
+      newArray[index] = value;
+      return newArray;
+    });
+  };
+
+  const handleBattType = (value: string, index: number) => {
+    setBattTypeArray((prevArray) => {
+      const newArray = [...prevArray];
+      newArray[index] = value;
+      return newArray;
+    });
+  };
+
+  const handleNetWeight = (value: string, index: number) => {
+    setWeightArray((prevArray) => {
+      const newArray = [...prevArray];
+      newArray[index] = value;
+      return newArray;
+    });
+  };
 
   type FormData = {
     [key: string]: any;
@@ -51,7 +96,10 @@ export default function ComplianceCol() {
   };
 
   // this function handles when the user uploads an MSDS file
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     let file;
     if (e.target.files) {
       file = e.target.files[0];
@@ -70,7 +118,7 @@ export default function ComplianceCol() {
     // This is the function that parses the pdf file and looks for the watt hour rating
     loadingTask.promise.then(async function (pdf) {
       const numPages = pdf.numPages;
-
+      let combinedText = "";
       // Loop through all pages
       for (let pageNumber = 1; pageNumber <= numPages; pageNumber++) {
         const page = await pdf.getPage(pageNumber);
@@ -81,36 +129,71 @@ export default function ComplianceCol() {
         // Process text content as needed for each page
         for (const item of textContent.items) {
           if ("str" in item) {
-            if (
-              item.str.toLowerCase().includes("watt") ||
-              item.str.toLowerCase().includes("wh") ||
-              item.str.toLowerCase().includes("rating")
-            ) {
-              const numbers = item.str.match(/\d+/g);
-              if (numbers) {
-                extractedWH = parseInt(numbers[0]);
+            combinedText += item.str;
+            //   if (
+            //     item.str.toLowerCase().includes("watt") ||
+            //     item.str.toLowerCase().includes("wh") ||
+            //     item.str.toLowerCase().includes("rating")
+            //   ) {
+            //     const numbers = item.str.match(/\d+/g);
+            //     if (numbers) {
+            //       extractedWH = parseInt(numbers[0]);
 
-                console.log(
-                  `Page ${pageNumber}, Extracted Number: ${extractedWH}`
-                );
+            //       console.log(
+            //         `Page ${pageNumber}, Extracted Number: ${extractedWH}`
+            //       );
 
-                // Break out of the loop once the first "wh" is found
-                break;
-              } else {
-                console.log(
-                  `Page ${pageNumber}, No numbers found in the string`
-                );
-              }
-            }
+            //       // Break out of the loop once the first "wh" is found
+            //       break;
+            //     } else {
+            //       console.log(
+            //         `Page ${pageNumber}, No numbers found in the string`
+            //       );
+            //     }
+            //   }
+            //   if (
+            //     /3480|3481/.test(item.str.toLowerCase())
+            //   ) {
+            //     console.log(item.str)
+            //     handleBattType("lithium-ion", index);
+            //   } else if (
+            //     /lithium-manganese|manganese|lithium manganese/.test(item.str.toLowerCase())
+            //   ) {
+            //     handleBattType("Lithium Manganese Dioxide(LiMnO2)", index);
+            //   }
           }
         }
+        // console.log(combinedText);
 
-        // Check if "wh" is found to break out of the outer loop
-        if (extractedWH) {
-          console.log(wattHours, extractedWH);
+        // // Check if "wh" is found to break out of the outer loop
+        // if (extractedWH) {
+        //   handleWattHours(extractedWH.toString(), index);
+        //   break;
+        // }
+      }
+      handleBattType("", index);
+      handleWattHours("", index);
+      handleNetWeight("", index);
+      handleLithiumContent("", index);
+      let responseData;
 
-          setWattHours(extractedWH.toString());
-          break;
+      try {
+        const response = await apiCall(combinedText);
+        console.log(response);
+        responseData = response?.split(",");
+      } catch (error) {
+        console.error("Error occurred during API call:", error);
+      }
+
+      if (responseData) {
+        if (responseData[0].toLowerCase() == "lithium-ion" || responseData[0] == "Lithium-Polymer" ) {
+          handleBattType(responseData[0], index);
+          handleWattHours(responseData[1], index);
+          handleNetWeight(responseData[2], index);
+        } else {
+          handleBattType(responseData[0], index);
+          handleLithiumContent(responseData[1], index);
+          handleNetWeight(responseData[2], index);
         }
       }
     });
@@ -135,11 +218,15 @@ export default function ComplianceCol() {
                 name={`BATTERY_TYPE-${index}`}
                 render={({ field }) => (
                   <Select
-                    onValueChange={(e)=> {
-                      setBatteryType(e);
-                      field.onChange;
+                    onValueChange={(e) => {
+                      // Update state directly within field.onChange
+                      field.onChange(e);
+
+                      // Perform additional actions here if needed
+                      handleBattType(e, index);
                     }}
                     defaultValue={field.value}
+                    value={battTypeArray[index]}
                   >
                     <SelectTrigger className="w-[180px]">
                       <SelectValue placeholder="" />
@@ -162,7 +249,6 @@ export default function ComplianceCol() {
                 render={({ field }) => (
                   <Select
                     onValueChange={() => {
-                      setBatteryType("lithium-ion");
                       field.onChange;
                     }}
                     defaultValue={field.value}
@@ -213,7 +299,7 @@ export default function ComplianceCol() {
                       <SelectValue placeholder="" />
                     </SelectTrigger>
                     <SelectContent>
-                      {batteryType &&
+                      {battTypeArray[index] &&
                         unCodes["lithium-ion"].map((code, index) => (
                           <SelectItem key={index} value={code}>
                             {code}
@@ -287,7 +373,11 @@ export default function ComplianceCol() {
                     maxLength={13}
                     pattern="\d+" // Use the \d+ regex pattern to allow only digits
                     title="Please enter only digits"
-                    disabled={batteryType === 'lithium-ion'}
+                    disabled={battTypeArray[index] === "lithium-ion" || battTypeArray[index] === "Lithium-Polymer"}
+                    value={lithiumContentArray[index]}
+                    onChange={(e) =>
+                      handleLithiumContent(e.target.value, index)
+                    }
                   />
                 )}
               />
@@ -303,8 +393,12 @@ export default function ComplianceCol() {
                     required
                     pattern="\d+" // Use the \d+ regex pattern to allow only digits
                     title="Please enter only digits"
-                    value={wattHours}
-                    onChange={(e) => setWattHours(e.target.value)}
+                    disabled={battTypeArray[index] !== "lithium-ion" && battTypeArray[index] !== "Lithium-Polymer"}
+                    value={wattHoursArray[index]} // Check for NaN and set to an empty string
+                    onChange={(e) => {
+                      // const parsedValue = parseFloat(e.target.value);
+                      handleWattHours(e.target.value, index);
+                    }}
                   />
                 )}
               />
@@ -322,6 +416,10 @@ export default function ComplianceCol() {
                     maxLength={13}
                     pattern="\d+" // Use the \d+ regex pattern to allow only digits
                     title="Please enter only digits"
+                    value={weightArray[index]}
+                    onChange={(e) => {
+                      handleNetWeight(e.target.value, index);
+                    }}
                   />
                 )}
               />
@@ -338,7 +436,7 @@ export default function ComplianceCol() {
                     type="file"
                     id="fileInput"
                     accept=".pdf"
-                    onChange={(e) => handleChange(e)}
+                    onChange={(e) => handleChange(e, index)}
                   />
                 )}
               />
