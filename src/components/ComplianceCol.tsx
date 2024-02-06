@@ -299,12 +299,21 @@ export default function ComplianceCol() {
                       <SelectValue placeholder="" />
                     </SelectTrigger>
                     <SelectContent>
-                      {battTypeArray[index] &&
+                      {battTypeArray[index] === "lithium-ion" || battTypeArray[index] === "Lithium-Polymer" ?
                         unCodes["lithium-ion"].map((code, index) => (
                           <SelectItem key={index} value={code}>
                             {code}
                           </SelectItem>
-                        ))}
+                        ))
+                          :
+                          battTypeArray[index].toLowerCase().startsWith("lithium") ?
+                        unCodes["lithium-manganese"].map((code, index) => (
+                          <SelectItem key={index} value={code}>
+                            {code}
+                          </SelectItem>
+                        )) :
+                        null
+                      }
                     </SelectContent>
                   </Select>
                 )}
