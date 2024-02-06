@@ -12,7 +12,7 @@ const NavBar = () => {
 
   return (
     <div className="fixed z-50 flex items-center w-full h-16 overflow-auto justify-evenly bg-secondary">
-      <div className="w-[15%] flex">
+      <div className="w-[10%] flex">
         {path === "/example" && (
           <Button
             className="m-4"
@@ -34,7 +34,7 @@ const NavBar = () => {
 
         <ModeToggle />
       </div>
-      <div className="w-[20%]">
+      <div className="flex w-[10%] justify-end">
         {path === "/example" && (
           <Button type="submit" className="m-4" form="myForm">
             Next
