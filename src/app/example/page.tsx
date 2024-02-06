@@ -1,5 +1,5 @@
 "use client";
-import Row from "@/components/Row";
+import Row from "@/components/SetupCol";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,

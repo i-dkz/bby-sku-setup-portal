@@ -244,7 +244,7 @@
 
 "use client";
 import ComplianceCol from "@/components/ComplianceCol";
-import Row from "@/components/Row";
+import Row from "@/components/SetupCol";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
