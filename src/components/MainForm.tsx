@@ -55,7 +55,7 @@ export function ProfileForm() {
     // ✅ This will be type-safe and validated.
 
       setSelectedNum(values.numberOfSKUS);
-      router.push("/example");
+      router.push("/setup");
     
 
     
